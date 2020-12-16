@@ -1,4 +1,7 @@
 // 动态规划
+// 子串是连续的，子序列是不连续的
+/***************************************************************************************/
+
 /*5. 最长回文子串*/
 /*给定一个字符串 s，找到 s 中最长的回文子串。你可以假设 s 的最大长度为 1000。*/
 // 方法一：动态规划
@@ -50,6 +53,46 @@ int longestPalindromeSubseq(string s) {
     return dp[0][n - 1];
 }
 
+/*72. 编辑距离*/
+/*
+给你两个单词 word1 和 word2，请你计算出将 word1 转换成 word2 所使用的最少操作数 。
+
+你可以对一个单词进行如下三种操作：
+
+插入一个字符
+删除一个字符
+替换一个字符
+*/
+class Solution {
+public:
+    int minDistance(string word1, string word2) {
+      int w1Size = word1.size();
+      int w2Size = word2.size();
+
+      int dp[w1Size+1][w2Size+1];
+      for( int i = 0; i <= w1Size; i++ )
+        dp[i][0] = i;
+      for( int j = 0; j <= w2Size; j++ )
+        dp[0][j] = j;
+
+      for( int i = 1; i <= w1Size; i++ ) {
+        for( int j = 1; j <= w2Size; j++ ) {
+          if( word1[i-1] == word2[j-1] )
+            dp[i][j] = dp[i-1][j-1];
+          else {
+            // int doReplace = dp[i-1][j-1] + 1;
+            // int doInsert  = dp[i][j-1]   + 1;
+            // int doDelete  = dp[i-1][j]   + 1; 
+            // dp[i][j] = min( doReplace, min( doDelete, doInsert) );
+            dp[i][j] = min( dp[i-1][j-1], min( dp[i][j-1], dp[i-1][j]) ) + 1;
+          }
+        }
+      }
+
+      return dp[w1Size][w2Size];
+    }
+};
+/***************************************************************************************/
 
 /*
 376. 摆动序列
@@ -125,3 +168,144 @@ public:
     }
 };
 
+/*10. 正则表达式匹配*/
+/*
+给你一个字符串 s 和一个字符规律 p，请你来实现一个支持 '.' 和 '*' 的正则表达式匹配。
+
+'.' 匹配任意单个字符
+'*' 匹配零个或多个前面的那一个元素
+所谓匹配，是要涵盖 整个 字符串 s的，而不是部分字符串。
+*/
+class Solution {
+public:
+  bool isMatch(string s, string p) {
+    int n1 = s.size(), n2 = p.size();
+    if(n1 != 0 && n2 == 0) return false;
+    vector< vector<int> > dp(n1 + 1, vector(n2 + 1, 0));
+    dp[0][0] = 1;
+    auto match = [&s, &p](int i, int j) {
+      if(i == 0)
+        return false;
+      if(p[j - 1] == '.')
+        return true;
+      return s[i - 1] == p[j - 1];
+    };
+    for(int i = 0; i <= n1; i ++) {
+      for(int j = 1; j <= n2; j ++) {
+        if(p[j - 1] == '*') {
+          if(match(i, j - 1)) 
+            dp[i][j] |= dp[i - 1][j];
+          if(j >= 2)
+            dp[i][j] |= dp[i][j - 2];
+        } else {
+          if(match(i, j)) 
+            dp[i][j] |= dp[i - 1][j - 1];
+        }
+      }
+    }
+    return dp[n1][n2];
+  }
+};
+
+
+/***************************************************************************************/
+/*53. 最大子数组和*/
+/*给定一个整数数组 nums ，找到一个具有最大和的连续子数组（子数组最少包含一个元素），返回其最大和。*/
+class Solution {
+public:
+  int maxSubArray(vector<int>& nums) {
+    int n = nums.size();
+    // vector<int> dp(n); dp[0] = nums[0];
+    // for(int i = 1; i < n; i ++) {
+    //   dp[i] = max(nums[i], dp[i - 1] + nums[i]);
+    // }
+    // return *max_element(dp.begin(), dp.end());
+    int ans = nums[0], sum = nums[0];
+    for(int i = 1; i < n; i ++) {
+      sum = max(nums[i], sum + nums[i]);
+      ans = max(ans, sum);
+    }
+    return ans;
+  }
+};
+
+
+/*152. 乘积最大子数组*/
+/*给你一个整数数组 nums ，请你找出数组中乘积最大的连续子数组（该子数组中至少包含一个数字），并返回该子数组所对应的乘积。*/
+class Solution {
+public:
+  int maxProduct(vector<int>& nums) {
+    // vector<int> maxF(nums), minF(nums);
+    // for(int i = 1; i < nums.size(); i ++) {
+    //   maxF[i] = max(maxF[i - 1] * nums[i], max(nums[i], minF[i - 1] * nums[i]));
+    //   minF[i] = min(minF[i - 1] * nums[i], min(nums[i], maxF[i - 1] * nums[i]));
+    // }
+    // return *max_element(maxF.begin(), maxF.end());
+    int maxP = nums[0], minP = nums[0], ans = nums[0];
+    for(int i = 1; i < nums.size(); i ++) {
+      int mx = maxP, mn = minP;
+      maxP = max(nums[i], max(nums[i] * mx, nums[i] * mn));
+      minP = min(nums[i], min(nums[i] * mx, nums[i] * mn));
+      ans = max(ans, maxP);
+    }
+    return ans;
+  }
+};
+/***************************************************************************************/
+
+/*32. 最长有效括号*/
+/*给定一个只包含 '(' 和 ')' 的字符串，找出最长的包含有效括号的子串的长度。*/
+/*我们定义 dp[i] 表示以下标 i 字符结尾的最长有效括号的长度。*/
+class Solution {
+public:
+    int longestValidParentheses(string s) {
+        int size = s.length();
+        vector<int> dp(size, 0);
+
+        int maxVal = 0;
+        for(int i = 1; i < size; i++) {
+            if (s[i] == ')') {
+                if (s[i - 1] == '(') {
+                    dp[i] = 2;
+                    if (i - 2 >= 0) {
+                        dp[i] = dp[i] + dp[i - 2];
+                    }
+                } else if (dp[i - 1] > 0) {
+                    if ((i - dp[i - 1] - 1) >= 0 && s[i - dp[i - 1] - 1] == '(') {
+                        dp[i] = dp[i - 1] + 2;
+                        if ((i - dp[i - 1] - 2) >= 0) {
+                            dp[i] = dp[i] + dp[i - dp[i - 1] - 2];
+                        }
+                    }
+                }
+            }
+            maxVal = max(maxVal, dp[i]);
+        }
+        return maxVal;
+    }
+};
+
+
+/*120. 三角形最小路径和*/
+/*
+给定一个三角形，找出自顶向下的最小路径和。每一步只能移动到下一行中相邻的结点上。
+
+相邻的结点 在这里指的是 下标 与 上一层结点下标 相同或者等于 上一层结点下标 + 1 的两个结点。
+*/
+class Solution {
+public:
+  int minimumTotal(vector<vector<int>>& triangle) {
+    int n = triangle.size();
+    if(n == 0) return 0;
+    vector< vector<int> > dp(n, vector(n, 0)); 
+    dp[0][0] = triangle[0][0];
+    for(int i = 1; i < n; i ++) {
+      dp[i][0] = dp[i - 1][0] + triangle[i][0];
+      for(int j = 1; j < i; j++) {
+        dp[i][j] = min(dp[i - 1][j - 1], dp[i - 1][j]) + triangle[i][j];
+      }
+      dp[i][i] = dp[i - 1][i - 1] + triangle[i][i];
+    }
+    return *min_element(dp[n - 1].begin(), dp[n - 1].end());
+  }
+};
