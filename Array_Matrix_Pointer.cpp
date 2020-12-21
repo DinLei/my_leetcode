@@ -31,6 +31,32 @@ public:
     }
 };
 
+
+/*75. 颜色分类*/
+/*
+给定一个包含红色、白色和蓝色，一共 n 个元素的数组，原地对它们进行排序，使得相同颜色的元素相邻，并按照红色、白色、蓝色顺序排列。
+此题中，我们使用整数 0、 1 和 2 分别表示红色、白色和蓝色。
+
+进阶：
+你可以不使用代码库中的排序函数来解决这道题吗？
+你能想出一个仅使用常数空间的一趟扫描算法吗？
+*/
+// 三指针：最前面填充0，中间i顺延填充1，最后的位置留给2
+class Solution {
+public:
+  void sortColors(vector<int>& nums) {
+    int size = nums.size();
+    if(size < 2) return;
+    int i = 0, zero = 0, two = size;
+    while(i < two) {
+      if(nums[i] == 0) swap(nums[zero ++], nums[i ++]);
+      else if(nums[i] == 1) i ++;
+      else swap(nums[-- two], nums[i]);
+    }
+  }
+};
+
+
 /*15. 三数之和*/
 /*
 给你一个包含 n 个整数的数组 nums，判断 nums 中是否存在三个元素 a，b，c ，使得 a + b + c = 0 ？请你找出所有满足条件且不重复的三元组。
@@ -78,6 +104,7 @@ public:
 /*
 给你 n 个非负整数 a1，a2，...，an，每个数代表坐标中的一个点 (i, ai) 。在坐标内画 n 条垂直线，垂直线 i 的两个端点分别为 (i, ai) 和 (i, 0) 。找出其中的两条线，使得它们与 x 轴共同构成的容器可以容纳最多的水。
 */
+// 双指针
 class Solution {
 public:
 
@@ -186,3 +213,4 @@ public:
     }
   }
 };
+

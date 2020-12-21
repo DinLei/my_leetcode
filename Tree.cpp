@@ -1,4 +1,4 @@
-/* 二叉搜索树 + 动态规划 */
+/** 二叉搜索树 + 动态规划 */
 /*
 96. 不同的二叉搜索树
 level: 中等
@@ -18,7 +18,7 @@ public:
 };
 
 
-/*
+/**
 95. 不同的二叉搜索树 II
 level: 中等
 label: 动态规划
@@ -334,8 +334,7 @@ public:
     Node* connect(Node* root) {
         if (root == nullptr) {
             return root;
-        }
-        
+        } 
         // 从根节点开始
         Node* leftmost = root;
         
@@ -345,19 +344,15 @@ public:
             Node* head = leftmost;
             
             while (head != nullptr) {
-                
                 // CONNECTION 1
                 head->left->next = head->right;
-                
                 // CONNECTION 2
                 if (head->next != nullptr) {
                     head->right->next = head->next->left;
                 }
-                
                 // 指针向后移动
                 head = head->next;
             }
-            
             // 去下一层的最左的节点
             leftmost = leftmost->left;
         }
@@ -636,5 +631,27 @@ public:
       prev = curr;
     }
     return true;
+  }
+};
+
+
+/*226. 翻转二叉树*/
+/*
+翻转一棵二叉树。
+*/
+class Solution {
+public:
+  TreeNode* invertTree(TreeNode* root) {
+    dfs(root);
+    return root;
+  }
+
+  void dfs(TreeNode* root) {
+    if(!root) return;
+    TreeNode* tmp = root->left;
+    root->left = root->right;
+    root->right = tmp;
+    dfs(root->left);
+    dfs(root->right);
   }
 };

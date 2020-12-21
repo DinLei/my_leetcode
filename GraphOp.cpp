@@ -83,23 +83,6 @@ public:
 };
 
 
-/*
-int main()
-{
-    Graph g(2);   // 创建图
-    g.addEdge(1, 0);
-    // g.addEdge(5, 0);
-    // g.addEdge(4, 0);
-    // g.addEdge(4, 1);
-    // g.addEdge(2, 3);
-    // g.addEdge(3, 1);
-
-    vector<int> res;
-    g.topoSort(res);
-    return 0;
-}
-*/
-
 /*207. 课程表*/
 /*
 你这个学期必须选修 numCourse 门课程，记为 0 到 numCourse-1 。
@@ -131,5 +114,55 @@ public:
       }
     }
     return count == numCourses;
+  }
+};
+
+/*990. 等式方程的可满足性*/
+class Solution {
+public:
+  vector<int> parent;
+  vector<int> rank;
+
+  // 找父节点
+  int findSet( int x ) {
+    int xp = parent[x];
+    if( xp == -1 )
+      return x;
+    return findSet( xp );
+  }
+  // 建立关系
+  void unionSet( int x, int y ) {
+    int xp = findSet( x );
+    int yp = findSet( y );
+    if( xp != yp ) 
+      parent[xp] = yp;
+  }
+  
+  bool equationsPossible(vector<string>& equations) {
+    int eSize = equations.size(); 
+
+    parent.resize( 26, -1 );
+    rank.resize( 26, 0 );
+
+    for( int i = 0; i < eSize; i ++ ) {
+      if( equations[i][1] == '=' ) {
+        char left = equations[i][0];
+        char right = equations[i][3];
+        unionSet( left-'a', right-'a' );
+      }
+    }
+
+    for( int i = 0; i < eSize; i ++ ) {
+      if( equations[i][1] == '!' ) {
+        char left = equations[i][0];
+        char right = equations[i][3];
+
+        int lp = findSet( left-'a' );
+        int rp = findSet( right-'a' );
+        if( lp == rp )
+          return false;
+      }
+    }  
+    return true;
   }
 };

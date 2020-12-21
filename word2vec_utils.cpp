@@ -1,6 +1,7 @@
 
 // Create binary Huffman tree using the word counts
 // Frequent words will have short uniqe binary codes
+// 构建 Huffman 树
 void CreateBinaryTree() {
   long long a, b, i, min1i, min2i, pos1, pos2, point[MAX_CODE_LENGTH];
   char code[MAX_CODE_LENGTH];
@@ -73,7 +74,7 @@ void CreateBinaryTree() {
 }
 
 
-// 根据词汇频率做的负采样的表
+// 根据词汇频率做的负采样表
 void InitUnigramTable() {
   int a, i;
   double train_words_pow = 0;

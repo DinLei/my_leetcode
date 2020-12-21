@@ -1,4 +1,5 @@
 // 动态规划
+// 字符串相关的动态规划往往构建二维表进行递推
 // 子串是连续的，子序列是不连续的
 /***************************************************************************************/
 
@@ -361,7 +362,7 @@ public:
 };
 /***************************************************************************************/
 
-/*32. 最长有效括号*/
+/**32. 最长有效括号*/
 /*给定一个只包含 '(' 和 ')' 的字符串，找出最长的包含有效括号的子串的长度。*/
 /*我们定义 dp[i] 表示以下标 i 字符结尾的最长有效括号的长度。*/
 class Solution {
@@ -397,7 +398,6 @@ public:
 /*120. 三角形最小路径和*/
 /*
 给定一个三角形，找出自顶向下的最小路径和。每一步只能移动到下一行中相邻的结点上。
-
 相邻的结点 在这里指的是 下标 与 上一层结点下标 相同或者等于 上一层结点下标 + 1 的两个结点。
 */
 class Solution {
@@ -749,4 +749,40 @@ public:
   }
 };
 
+
+/**416. 分割等和子集*/
+/*
+给定一个只包含正整数的非空数组。是否可以将这个数组分割成两个子集，使得两个子集的元素和相等。
+
+注意:
+每个数组中的元素不会超过 100
+数组的大小不会超过 200、
+*/
+// 动态规划除了明显递推关系式以外，还有背包问题：目标是多少，从已有的元素里能填充多少，是否填完、填完用料最少等
+class Solution {
+public:
+  bool canPartition(vector<int>& nums) {
+    int n = nums.size();
+    if(n < 2) return false;
+    int sum = accumulate(nums.begin(), nums.end(), 0);
+    if(sum & 1) return false;
+    int target = sum / 2;
+    int maxEle = *max_element(nums.begin(), nums.end());
+    if(maxEle > target) return false;
+    vector< vector<int> > dp(n, vector<int>(target + 1, 0));
+    for(int i = 0; i < n; i ++) dp[i][0] = 1;
+    for(int i = 1; i < n; i ++) {
+      for(int j = target; j >= 0; j --) {
+        // dp[i][j] = dp[i - 1][j] | dp[i - 1][j - nums[i]];
+      // for(int j = 1; j <= target; j ++) {
+        if(j >= nums[i]) {
+          dp[i][j] = dp[i - 1][j] | dp[i - 1][j - nums[i]];
+        } else {
+          dp[i][j] = dp[i - 1][j];
+        }
+      }
+    }
+    return dp[n - 1][target];
+  }
+};
 

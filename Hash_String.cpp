@@ -7,7 +7,7 @@ level: 中等
 
 // https://leetcode-cn.com/problems/contains-duplicate-iii/solution/xiang-xi-tong-su-de-si-lu-fen-xi-duo-jie-fa-by-46/
 
-/*剑指 Offer 48. 最长不含重复字符的子字符串*/
+/****剑指 Offer 48. 最长不含重复字符的子字符串*/
 class Solution {
 public:
   int lengthOfLongestSubstring(string s) {
