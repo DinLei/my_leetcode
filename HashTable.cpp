@@ -23,3 +23,47 @@ public:
     return max(ans, i - start);
   }
 };
+
+class Solution {
+public:
+  int lengthOfLongestSubstring(string s) {
+    int ans(0), start(0);
+    vector<int> asc96(96, -1);
+    for( int i = 0; i < s.size(); i ++ ) {
+      int& tmp = asc96[s[i] - ' '];
+      if( tmp >= start ) {
+        ans = max( ans, i - start );
+        start = tmp + 1;
+      }
+      tmp = i;
+    }
+    return max( ans, int(s.size()) - start );
+  }
+};
+
+
+/*128. 最长连续序列*/
+/*
+给定一个未排序的整数数组 nums ，找出数字连续的最长序列（不要求序列元素在原数组中连续）的长度。
+进阶：你可以设计并实现时间复杂度为 O(n) 的解决方案吗？
+*/
+
+// hash set做法
+class Solution {
+public:
+  int longestConsecutive(vector<int>& nums) {
+    unordered_set<int> set;
+    for(auto x: nums) set.insert(x);
+    int ans = 0;
+    for(auto x: nums) {
+      // 技巧：如果有比自己小一点的，那自己不查，让小的去查
+      if(set.count(x - 1)) continue;
+      int tmp = 1, v = x;
+      while(set.count(++ v)) tmp ++;
+      ans = max(ans, tmp);
+    }
+    return ans;
+  }
+};
+
+

@@ -113,14 +113,9 @@ public:
 
 /*99. 恢复二叉搜索树*/
 /*
-
 给你二叉搜索树的根节点 root ，该树中的两个节点被错误地交换。请在不改变其结构的情况下，恢复这棵树。
 
 进阶：使用 O(n) 空间复杂度的解法很容易实现。你能想出一个只使用常数空间的解决方案吗？
-
-来源：力扣（LeetCode）
-链接：https://leetcode-cn.com/problems/recover-binary-search-tree
-著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 */
 class Solution {
 public:
@@ -299,7 +294,7 @@ public:
     }
 };
 
-//方法二：寻找前驱节点。解题的关键是：左子树的最下最右的节点，是右子树的父节点.
+//方法二：寻找前驱节点。解题的关键是：左子树的最下最右的节点 新立为 右子树的父节点.
 class Solution {
 public:
     void flatten(TreeNode* root) {
@@ -328,13 +323,8 @@ public:
 初始状态下，所有 next 指针都被设置为 NULL。
 
 进阶：
-
 你只能使用常量级额外空间。
 使用递归解题也符合要求，本题中递归程序占用的栈空间不算做额外的空间复杂度。
-
-来源：力扣（LeetCode）
-链接：https://leetcode-cn.com/problems/populating-next-right-pointers-in-each-node
-著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 */
 
 // 方法一：层次遍历 O(n) + O(n)
@@ -413,8 +403,9 @@ public:
 
 /*124. 二叉树中的最大路径和*/
 /*
-给定一个非空二叉树，返回其最大路径和。
+和 543. 二叉树的直径 类似
 
+给定一个非空二叉树，返回其最大路径和。
 本题中，路径被定义为一条从树中任意节点出发，沿父节点-子节点连接，达到任意节点的序列。该路径至少包含一个节点，且不一定经过根节点。
 */
 class Solution {
@@ -446,4 +437,204 @@ public:
         maxGain(root);
         return maxSum;
     }
+};
+
+
+/*剑指 Offer 33. 二叉搜索树的后序遍历序列*/
+/*输入一个整数数组，判断该数组是不是某二叉搜索树的后序遍历结果。如果是则返回 true，否则返回 false。假设输入的数组的任意两个数字都互不相同。*/
+class Solution {
+public:
+  bool verifyPostorder(vector<int>& postorder) {
+    return recur(postorder, 0, postorder.size() - 1);
+  }
+
+  bool recur(vector<int>& postorder, int i, int j) {
+    if(i >= j) return true;
+    int p = i;
+    while(postorder[p] < postorder[j]) p ++;
+    int m = p;
+    while(postorder[p] > postorder[j]) p ++;
+    return p == j && recur(postorder, i, m - 1) && recur(postorder, m, j - 1);
+  }
+};
+
+
+/*236. 二叉树的最近公共祖先*/
+/*
+给定一个二叉树, 找到该树中两个指定节点的最近公共祖先。
+
+百度百科中最近公共祖先的定义为：“对于有根树 T 的两个结点 p、q，最近公共祖先表示为一个结点 x，满足 x 是 p、q 的祖先且 x 的深度尽可能大（一个节点也可以是它自己的祖先）。”
+*/
+class Solution {
+private:
+TreeNode* ans;
+public:
+  TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
+    dfs(root, p, q);
+    return ans;
+  }
+
+  bool dfs(TreeNode* root, TreeNode* p, TreeNode* q) {
+    if(root == NULL) return 0;
+    bool lson = dfs(root->left, p, q);
+    bool rson = dfs(root->right, p, q);
+    if((lson && rson) || ((root == p || root == q) && (lson || rson)))
+      ans = root;
+    return lson || rson || (root == p || root == q);
+  }
+};
+
+/*572. 另一个树的子树*/
+/*
+给定两个非空二叉树 s 和 t，检验 s 中是否包含和 t 具有相同结构和节点值的子树。s 的一个子树包括 s 的一个节点和这个节点的所有子孙。s 也可以看做它自身的一棵子树。
+*/
+class Solution {
+public:
+  // 对当前节点贪心搜索
+  bool check(TreeNode* s, TreeNode* t) {
+    if(!s && !t) return true;
+
+    if((!s && t) || (s && !t) || s->val != t->val) 
+      return false;
+    
+    return check(s->left, t->left) && check(s->right, t->right);
+  }
+
+  // 对s的每棵子树都要深入到s的每个节点进行判断
+  bool dfs(TreeNode* s, TreeNode* t) {
+    if(!s) return false;
+    return check(s, t) || dfs(s->left, t) || dfs(s->right, t);
+  }
+
+  bool isSubtree(TreeNode* s, TreeNode* t) {
+    return dfs(s, t);
+  }
+};
+
+
+/*297. 二叉树的序列化与反序列化*/
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Codec {
+public:
+
+    // Encodes a tree to a single string.
+    string serialize(TreeNode* root) {
+      if (! root)
+        return "";
+      string ans = "";
+      queue<TreeNode*> nQueue;
+      nQueue.push(root);
+      while (!nQueue.empty()) {
+        TreeNode* next = nQueue.front();
+        nQueue.pop();
+        if (next) {
+          ans += to_string(next->val);
+          nQueue.push(next->left);
+          nQueue.push(next->right);
+        } else {
+          ans += "#";
+        }
+        ans += ",";
+      }
+      int end = ans.length()-1;
+      while (ans[end] == ',' || ans[end] == '#')
+        end --;
+      
+      return ans.substr(0, end+1);
+    }
+
+    // Decodes your encoded data to tree.
+    TreeNode* deserialize(string data) {
+      if(data == "") return nullptr;
+      std::istringstream iss(data);
+      string tmpVal;
+      getline(iss, tmpVal, ',');
+      TreeNode* root = new TreeNode(stoi(tmpVal));
+      queue<TreeNode*> que;
+      que.push(root);
+      while(getline(iss, tmpVal, ',')) {
+        TreeNode* node = que.front(); que.pop();
+        if(tmpVal != "#") {
+          node->left = new TreeNode(stoi(tmpVal));
+          que.push(node->left);
+        } else {
+          node->left = nullptr;
+        }
+
+        if(getline(iss, tmpVal, ',')) {
+          if(tmpVal != "#") {
+            node->right = new TreeNode(stoi(tmpVal));
+            que.push(node->right);
+          } else {
+            node->right = nullptr;
+          }
+        }
+      }
+      return root;
+    } 
+};
+
+
+/*103. 二叉树的锯齿形层次遍历*/
+class Solution {
+public:
+    vector<vector<int>> zigzagLevelOrder(TreeNode* root) {
+        if( root == NULL )
+            return {};
+        vector<vector<int> > ans;
+        deque<TreeNode*> que;
+        que.push_back(root);
+        bool direc = true;
+        TreeNode* node;
+        while( !que.empty() ) {
+            int n = que.size();
+            vector<int> layer;
+            while( n -- > 0 ) {
+                if( direc ) {
+                    node = que.front();
+                    que.pop_front();
+                    if(node->left) que.push_back(node->left);
+                    if(node->right) que.push_back(node->right);
+                } else {
+                    node = que.back();
+                    que.pop_back();
+                    if(node->right) que.push_front(node->right);
+                    if(node->left) que.push_front(node->left);
+                }
+                layer.push_back(node->val);
+            }
+
+            direc = !direc;
+            ans.push_back(layer);
+        }
+        return ans;
+    }
+};
+
+/*958. 二叉树的完全性检验*/
+class Solution {
+public:
+  bool isCompleteTree(TreeNode* root) {
+    queue<TreeNode*> que;
+    que.push(root);
+    TreeNode* prev = root;
+    while(!que.empty()) {
+      TreeNode* curr = que.front(); que.pop();
+      if(!prev && curr) return false;
+      if(curr) {
+        que.push(curr->left);
+        que.push(curr->right);
+      }
+      prev = curr;
+    }
+    return true;
+  }
 };
