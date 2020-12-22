@@ -360,40 +360,8 @@ public:
     return ans;
   }
 };
+
 /***************************************************************************************/
-
-/**32. 最长有效括号*/
-/*给定一个只包含 '(' 和 ')' 的字符串，找出最长的包含有效括号的子串的长度。*/
-/*我们定义 dp[i] 表示以下标 i 字符结尾的最长有效括号的长度。*/
-class Solution {
-public:
-    int longestValidParentheses(string s) {
-        int size = s.length();
-        vector<int> dp(size, 0);
-
-        int maxVal = 0;
-        for(int i = 1; i < size; i++) {
-            if (s[i] == ')') {
-                if (s[i - 1] == '(') {
-                    dp[i] = 2;
-                    if (i - 2 >= 0) {
-                        dp[i] = dp[i] + dp[i - 2];
-                    }
-                } else if (dp[i - 1] > 0) {
-                    if ((i - dp[i - 1] - 1) >= 0 && s[i - dp[i - 1] - 1] == '(') {
-                        dp[i] = dp[i - 1] + 2;
-                        if ((i - dp[i - 1] - 2) >= 0) {
-                            dp[i] = dp[i] + dp[i - dp[i - 1] - 2];
-                        }
-                    }
-                }
-            }
-            maxVal = max(maxVal, dp[i]);
-        }
-        return maxVal;
-    }
-};
-
 
 /*120. 三角形最小路径和*/
 /*
@@ -446,6 +414,41 @@ public:
   }
 };
 
+
+// 32、91、offer46，注意状态的跳转 //
+/**32. 最长有效括号*/
+/*给定一个只包含 '(' 和 ')' 的字符串，找出最长的包含有效括号的子串的长度。*/
+/*我们定义 dp[i] 表示以下标 i 字符结尾的最长有效括号的长度。*/
+class Solution {
+public:
+    int longestValidParentheses(string s) {
+        int size = s.length();
+        vector<int> dp(size, 0);
+
+        int maxVal = 0;
+        for(int i = 1; i < size; i++) {
+            if (s[i] == ')') {
+                if (s[i - 1] == '(') {
+                    dp[i] = 2;
+                    if (i - 2 >= 0) {
+                        dp[i] = dp[i] + dp[i - 2];
+                    }
+                } else if (dp[i - 1] > 0) {
+                    if ((i - dp[i - 1] - 1) >= 0 && s[i - dp[i - 1] - 1] == '(') {
+                        dp[i] = dp[i - 1] + 2;
+                        if ((i - dp[i - 1] - 2) >= 0) {
+                            dp[i] = dp[i] + dp[i - dp[i - 1] - 2];
+                        }
+                    }
+                }
+            }
+            maxVal = max(maxVal, dp[i]);
+        }
+        return maxVal;
+    }
+};
+
+
 /*91. 解码方法*/
 /*
 一条包含字母 A-Z 的消息通过以下方式进行了编码：
@@ -495,7 +498,7 @@ public:
   }
 };
 
-/*121. 买卖股票的最佳时机*/
+/**121. 买卖股票的最佳时机*/
 /*
 给定一个数组，它的第 i 个元素是一支给定股票第 i 天的价格。
 
@@ -615,11 +618,135 @@ public:
 };
 
 
-/*322. 零钱兑换*/
+/*279. 完全平方数*/
+/*
+给定正整数 n，找到若干个完全平方数（比如 1, 4, 9, 16, ...）使得它们的和等于 n。你需要让组成和的完全平方数的个数最少。
+*/
+class Solution {
+public:
+  int numSquares(int n) {
+    vector<int> dp(n + 1, 0);
+    for(int i = 1; i <= n; i ++) {
+      dp[i] = i;
+      for(int j = 1; i - j * j >= 0; j ++) 
+        dp[i] = min(dp[i], dp[i - j * j] + 1);
+    }
+    return dp[n];
+  }
+};
+
+
+/*746. 使用最小花费爬楼梯*/
+/*
+数组的每个索引作为一个阶梯，第 i个阶梯对应着一个非负数的体力花费值 cost[i](索引从0开始)。
+每当你爬上一个阶梯你都要花费对应的体力花费值，然后你可以选择继续爬一个阶梯或者爬两个阶梯。
+您需要找到达到楼层顶部的最低花费。在开始时，你可以选择从索引为 0 或 1 的元素作为初始阶梯。
+*/
+class Solution {
+public:
+  int minCostClimbingStairs(vector<int>& cost) {
+    vector<int> dp(cost.size());
+    dp[0] = cost[0];
+    dp[1] = cost[1];
+    for (int i = 2; i < cost.size(); i++) {
+      dp[i] = min(dp[i - 2], dp[i - 1]) + cost[i];
+    }
+    return min(dp[cost.size() - 2], dp[cost.size() - 1]);
+  }
+};
+
+// 优化版
+class Solution {
+public:
+  int minCostClimbingStairs(vector<int>& cost) {
+    for (int i = 2; i < cost.size(); i++) {
+      cost[i] = min(cost[i - 2], cost[i - 1]) + cost[i];
+    }
+    return min(cost[cost.size() - 2], cost[cost.size() - 1]);
+  }
+};
+
+
+/*63. 不同路径 II*/
+/*
+一个机器人位于一个 m x n 网格的左上角 （起始点在下图中标记为“Start” ）。
+机器人每次只能向下或者向右移动一步。机器人试图达到网格的右下角（在下图中标记为“Finish”）。
+
+现在考虑网格中有障碍物。那么从左上角到右下角将会有多少条不同的路径？
+网格中的障碍物和空位置分别用 1 和 0 来表示。
+*/
+//memo[i][j]的含义是：到达x = i, y = j的路径数目
+void initMemo(vector<vector<int>>&obstacleGrid,vector<vector<int>>& memo)
+{
+    int row = obstacleGrid.size(), column = obstacleGrid[0].size();
+    memo[0][0] = 1;
+
+    //处理首行、首列的格子
+    for(int j = 1; j < column; j++){ //处理首行
+        if(!obstacleGrid[0][j]) //可到达
+            memo[0][j] = memo[0][j - 1];
+        else
+            memo[0][j] = 0;
+    }
+    for(int i = 1; i < row; i++){ //处理首列
+        if(!obstacleGrid[i][0]) //可到达
+            memo[i][0] = memo[i - 1][0];
+        else    
+            memo[i][0] = 0;    
+    }
+
+    //处理非首行、非首列的格子
+    for(int i = 1; i < row; i++){
+        for(int j = 1; j < column; j++){
+            if(!obstacleGrid[i][j]) //可到达
+                memo[i][j] = memo[i - 1][j] + memo[i][j - 1]; 
+            else    
+                memo[i][j] = 0;    
+        }
+    }
+}
+
+int uniquePathsWithObstacles(vector<vector<int>>& obstacleGrid) {
+    if(obstacleGrid[0][0]) //起点是障碍，无路可走
+        return 0;
+
+    int row = obstacleGrid.size(), column = obstacleGrid[0].size();
+    vector<vector<int> > memo(row, vector<int>(column, 0));
+    //memo[i][j]的含义是：到达x = i, y = j的路径数目
+    initMemo(obstacleGrid, memo);
+
+    return memo[row - 1][column - 1]; 
+}
+
+//优化版: 滚动数组思想压缩空间复杂度
+int uniquePathsWithObstacles(vector<vector<int>>& obstacleGrid) {
+    int row = obstacleGrid.size(), column = obstacleGrid[0].size();
+    // 因为每次递推都是由左至右、由上至下
+    // 所以只要一维数组就够了（当前i的值为同一列上一行的值，i-1的值为同一行左边的值）
+    vector<int> memo(column, 0);
+    memo[0] = (obstacleGrid[0][0] == 0);
+
+    for(int i = 0; i < row; i++){
+        for(int j = 0; j < column; j++){
+            if(obstacleGrid[i][j]){   // 有障碍
+                memo[j] = 0;
+                continue;
+            }
+            if(j >= 1)
+                memo[j] += memo[j - 1];
+        }
+    }
+    return memo[column - 1];
+}
+
+
+/*================================背包问题======================================================*/
+/**322. 零钱兑换*/
 /*
 给定不同面额的硬币 coins 和一个总金额 amount。编写一个函数来计算可以凑成总金额所需的最少的硬币个数。如果没有任何一种硬币组合能组成总金额，返回 -1。
 你可以认为每种硬币的数量是无限的。
 */
+// 完全背包问题
 // 自下而上
 class Solution {
 public:
@@ -676,6 +803,7 @@ public:
 
 返回你想要完成在给定的列表 days 中列出的每一天的旅行所需要的最低消费。
 */
+// 通过 深度递归+内存记忆 来实现的
 class Solution {
 private:
   unordered_set<int> dayset;
@@ -697,55 +825,6 @@ public:
     else 
       memo[start] = dp(start + 1, costs);
     return memo[start];
-  }
-};
-
-
-/*279. 完全平方数*/
-/*
-给定正整数 n，找到若干个完全平方数（比如 1, 4, 9, 16, ...）使得它们的和等于 n。你需要让组成和的完全平方数的个数最少。
-*/
-class Solution {
-public:
-  int numSquares(int n) {
-    vector<int> dp(n + 1, 0);
-    for(int i = 1; i <= n; i ++) {
-      dp[i] = i;
-      for(int j = 1; i - j * j >= 0; j ++) 
-        dp[i] = min(dp[i], dp[i - j * j] + 1);
-    }
-    return dp[n];
-  }
-};
-
-
-/*746. 使用最小花费爬楼梯*/
-/*
-数组的每个索引作为一个阶梯，第 i个阶梯对应着一个非负数的体力花费值 cost[i](索引从0开始)。
-每当你爬上一个阶梯你都要花费对应的体力花费值，然后你可以选择继续爬一个阶梯或者爬两个阶梯。
-您需要找到达到楼层顶部的最低花费。在开始时，你可以选择从索引为 0 或 1 的元素作为初始阶梯。
-*/
-class Solution {
-public:
-  int minCostClimbingStairs(vector<int>& cost) {
-    vector<int> dp(cost.size());
-    dp[0] = cost[0];
-    dp[1] = cost[1];
-    for (int i = 2; i < cost.size(); i++) {
-      dp[i] = min(dp[i - 2], dp[i - 1]) + cost[i];
-    }
-    return min(dp[cost.size() - 2], dp[cost.size() - 1]);
-  }
-};
-
-// 优化版
-class Solution {
-public:
-  int minCostClimbingStairs(vector<int>& cost) {
-    for (int i = 2; i < cost.size(); i++) {
-      cost[i] = min(cost[i - 2], cost[i - 1]) + cost[i];
-    }
-    return min(cost[cost.size() - 2], cost[cost.size() - 1]);
   }
 };
 
@@ -773,8 +852,6 @@ public:
     for(int i = 0; i < n; i ++) dp[i][0] = 1;
     for(int i = 1; i < n; i ++) {
       for(int j = target; j >= 0; j --) {
-        // dp[i][j] = dp[i - 1][j] | dp[i - 1][j - nums[i]];
-      // for(int j = 1; j <= target; j ++) {
         if(j >= nums[i]) {
           dp[i][j] = dp[i - 1][j] | dp[i - 1][j - nums[i]];
         } else {
@@ -786,3 +863,55 @@ public:
   }
 };
 
+
+
+/*494. 目标和*/
+/*
+给定一个非负整数数组，a1, a2, ..., an, 和一个目标数，S。现在你有两个符号 + 和 -。对于数组中的任意一个整数，你都可以从 + 或 -中选择一个符号添加在前面。
+返回可以使最终数组和为目标数 S 的所有添加符号的方法数。
+*/
+/*
+1. 弄懂题意
+第一步需要根据题意考虑输出的结构，在【416.分割等和子集】这道题中，要求的输出结果就是boolean值，因此我们定义的dp数组只需要记录T/F即可，但是这道题要求返回结果是方法数，那么我们dp数组需要记录的数据就是具体的方法数。
+
+2. 定义状态
+搞清楚需要输出的结果后，就可以来想办法画一个表格，也就是定义dp数组的含义。根据背包问题的经验，可以将dp[ i ][ j ]定义为从数组nums中 0 - i 的元素进行加减可以得到 j 的方法数量。
+
+3. 状态转移方程
+搞清楚状态以后，我们就可以根据状态去考虑如何根据子问题的转移从而得到整体的解。这道题的关键不是nums[i]的选与不选，而是nums[i]是加还是减，那么我们就可以将方程定义为：
+
+dp[ i ][ j - nums[ i ] ] += dp[ i - 1 ][ j ]
+dp[ i ][ j + nums[ i ] ] += dp[ i - 1 ][ j ]
+可以理解为nums[i]这个元素我可以执行加，还可以执行减，那么我dp[i][j]可以向两个方向进行扩展。
+
+4. 打表格，dp数组的定义
+一般背包问题的定义都是dp[len][t+1]，这里的第二维根据题意需要变成2*t+1
+*/
+class Solution {
+private:
+  int ans;
+public:
+  int findTargetSumWays(vector<int>& nums, int S) {
+    int n = nums.size();
+    int range = accumulate(nums.begin(), nums.end(), 0);
+    if(S > range) return 0;
+    // 本题范围: [-range ~ 0 ~ range]
+    vector< vector<int> > dp(n, vector<int>(2 * range + 1, 0));
+    // 初始状态: (0, -nums[0]) 和 (0, nums[0])
+    dp[0][range - nums[0]] = 1;
+    dp[0][range + nums[0]] += 1;   // 这里 +=1 是 为了防止 nums[0]=0
+    // 状态转移: 从父节点转移到两个子节点
+    for(int i = 1; i < n; i ++) {
+      for(int sum = -range; sum <= range; sum ++) {
+        // 这个判断要求状态必须由合法的位置转移过去
+        // 也就是从中间向两边扩散
+        if(dp[i - 1][sum + range] > 0) {
+          dp[i][sum + nums[i] + range] += dp[i - 1][sum + range];
+          dp[i][sum - nums[i] + range] += dp[i - 1][sum + range];
+        }
+          // dp[i][sum] = dp[i - 1][sum + nums[i - 1] + range] + dp[i - 1][sum + nums[i + 1] + range];
+      }
+    }
+    return dp[n - 1][range + S];
+  }
+};

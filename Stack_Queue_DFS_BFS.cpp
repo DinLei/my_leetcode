@@ -1,5 +1,5 @@
 // DFS
-/*200. 岛屿数量*/
+/**200. 岛屿数量*/
 /*
 给你一个由 '1'（陆地）和 '0'（水）组成的的二维网格，请你计算网格中岛屿的数量。
 岛屿总是被水包围，并且每座岛屿只能由水平方向和/或竖直方向上相邻的陆地连接形成。
@@ -26,9 +26,11 @@ public:
   }
 
   void dfs(vector<vector<char>>& grid, int i, int j, int nrow, int ncol) {
+    // 注意这里的判断条件，这边的5个if不能放到一起
     if(grid[i][j] != '1')
       return ;
-    grid[i][j] = 'x';
+    // 技巧：遍历过的就改变状态，任意值都可以
+    grid[i][j] = '0';
     if(i > 0)
       dfs(grid, i-1, j, nrow, ncol);
     if(i < nrow-1)
@@ -40,9 +42,10 @@ public:
   }
 };
 
-/*695. 岛屿的最大面积*/
+/**695. 岛屿的最大面积*/
 class Solution {
 private:
+  // 技巧：将方向提前定好，后面直接for循环遍历
   int di[4] = {1, 0, -1, 0};
   int dj[4] = {0, -1, 0, 1};
 public:
@@ -78,6 +81,8 @@ public:
 /*
 给定一个二维的矩阵，包含 'X' 和 'O'（字母 O）。
 找到所有被 'X' 围绕的区域，并将这些区域里所有的 'O' 用 'X' 填充。
+
+被围绕的区间不会存在于边界上，换句话说，任何边界上的 'O' 都不会被填充为 'X'。 任何不在边界上，或不与边界上的 'O' 相连的 'O' 最终都会被填充为 'X'。如果两个元素在水平或垂直方向相邻，则称它们是“相连”的。
 */
 class Solution {
 public:
@@ -86,13 +91,15 @@ public:
     nr = board.size();
     if( nr == 0 ) return ;
     nc = board[0].size();
+    // 这道题目与岛屿统计不同点在于[边界&与边界相连]的'O'不会被填充，所以只从边界向内部开始深度遍历，
+    // 边界相关的'O'先用其他字符填充代替
     for( int i = 0; i < nr; i ++ ) {
-      dfs(board, i, 0);
-      dfs(board, i, nc-1);
+      dfs(board, i, 0);     // 每一行的最左边
+      dfs(board, i, nc-1);  // 每一行的最右边
     }
     for( int j = 1; j < nc-1; j ++ ) {
-      dfs(board, 0, j);
-      dfs(board, nr-1, j);
+      dfs(board, 0, j);     // 每一列的最上边
+      dfs(board, nr-1, j);  // 每一列的最下边
     }
     for( int i = 0; i < nr; i ++ ) {
       for( int j = 0; j < nc; j ++ ) {
@@ -144,6 +151,7 @@ private:
         if(i >= rows || i < 0 || j >= cols || j < 0 || board[i][j] != word[k]) return false;
         if(k == word.size() - 1) return true;
         board[i][j] = '\0';
+        // 联合判断的写法技巧
         bool res = dfs(board, word, i + 1, j, k + 1) || dfs(board, word, i - 1, j, k + 1) || 
                       dfs(board, word, i, j + 1, k + 1) || dfs(board, word, i , j - 1, k + 1);
         board[i][j] = word[k];
@@ -207,6 +215,7 @@ public:
 /*
 请根据每日 气温 列表，重新生成一个列表。对应位置的输出为：要想观测到更高的气温，至少需要等待的天数。如果气温在这之后都不会升高，请在该位置用 0 来代替。
 */
+// 滑动窗口+单调栈+存索引，保留 位置+数值 信息
   vector<int> dailyTemperatures(vector<int>& T) {
     int tSize = T.size();
     vector<int> ans(tSize, 0);
@@ -231,6 +240,7 @@ public:
 求在该柱状图中，能够勾勒出来的矩形的最大面积。
 */
 // 单调栈，通过左右两个方向的单调栈，进行区间确定
+// 空间换时间，时间复杂度从 O(N^2) -> O(N)
 class Solution {
 public:
     int largestRectangleArea(vector<int>& heights) {
@@ -273,6 +283,7 @@ pop() —— 删除栈顶的元素。
 top() —— 获取栈顶元素。
 getMin() —— 检索栈中的最小元素。
 */
+// 辅助栈的技巧
 class MinStack {
     stack<int> x_stack;
     stack<int> min_stack;
