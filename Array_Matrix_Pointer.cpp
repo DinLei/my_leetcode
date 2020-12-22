@@ -1,4 +1,27 @@
 //DoubleIndex
+/*88. 合并两个有序数组*/
+/*
+给你两个有序整数数组 nums1 和 nums2，请你将 nums2 合并到 nums1 中，使 nums1 成为一个有序数组。
+
+说明：
+初始化 nums1 和 nums2 的元素数量分别为 m 和 n 。
+你可以假设 nums1 有足够的空间（空间大小大于或等于 m + n）来保存 nums2 中的元素。
+*/
+class Solution {
+public:
+  void merge(vector<int>& nums1, int m, vector<int>& nums2, int n) {
+    int p1 = m - 1, p2 = n - 1;
+    int p = m + n - 1;
+    while ( (p1 >= 0) && (p2 >= 0) ) {
+      nums1[p --] = (nums1[p1] < nums2[p2]) ? nums2[p2--] : nums1[p1--];
+    }
+    for(int i = 0; i <= p2; i ++) {
+      nums1[i] = nums2[i];
+    }
+  }
+};
+
+
 /*76. 最小覆盖子串*/
 /*
 给你一个字符串 s 、一个字符串 t 。返回 s 中涵盖 t 所有字符的最小子串。如果 s 中不存在涵盖 t 所有字符的子串，则返回空字符串 "" 。
@@ -32,6 +55,28 @@ public:
 };
 
 
+/*26. 删除排序数组中的重复项*/
+/*
+给定一个排序数组，你需要在 原地 删除重复出现的元素，使得每个元素只出现一次，返回移除后数组的新长度。
+不要使用额外的数组空间，你必须在 原地 修改输入数组 并在使用 O(1) 额外空间的条件下完成。
+*/
+/*典型的双指针用法，注意与 189 原地 旋转数组 的方法做对比*/
+class Solution {
+public:
+  int removeDuplicates(vector<int>& nums) {
+    if(nums.size() <= 0)
+      return 0;
+    int i = 0, j = 1, n = nums.size();
+    while(++i < n) {
+      if(nums[i] != nums[i - 1]) {
+        nums[j++] = nums[i];
+      }
+    }
+    return j;
+  }
+};
+
+
 /*75. 颜色分类*/
 /*
 给定一个包含红色、白色和蓝色，一共 n 个元素的数组，原地对它们进行排序，使得相同颜色的元素相邻，并按照红色、白色、蓝色顺序排列。
@@ -57,6 +102,105 @@ public:
 };
 
 
+/*11. 盛最多水的容器*/
+/*
+给你 n 个非负整数 a1，a2，...，an，每个数代表坐标中的一个点 (i, ai) 。在坐标内画 n 条垂直线，垂直线 i 的两个端点分别为 (i, ai) 和 (i, 0) 。找出其中的两条线，使得它们与 x 轴共同构成的容器可以容纳最多的水。
+*/
+// 双指针
+class Solution {
+public:
+  int maxArea2(vector<int>& height) {
+    int l = 0, r = height.size() - 1;
+    int ans = 0;
+    while (l < r) {
+        int area = min(height[l], height[r]) * (r - l);
+        ans = max(ans, area);
+        if (height[l] <= height[r]) {
+            ++ l;
+        } else {
+            -- r;
+        }
+    }
+    return ans;
+  }
+};
+
+
+/*33. 搜索旋转排序数组*/
+// 二分查找，注意区间特性
+class Solution {
+public:
+  int search(vector<int>& nums, int target) {
+    int n = nums.size();
+    int l = 0, r = n - 1;
+    while(l <= r) {
+      int m = (l + r) >> 1;
+      if(nums[m] == target) return m;
+      if(nums[m] >= nums[0]) {
+        if(nums[0] <= target && target < nums[m])
+          r = m - 1;
+        else 
+          l = m + 1;
+      } else {
+        if(nums[m] < target && target <= nums[n - 1])
+          l = m + 1;
+        else 
+          r = m - 1;
+      }
+    }
+    return -1;
+  }
+};
+
+
+/*189. 旋转数组*/
+/*
+给定一个数组，将数组中的元素向右移动 k 个位置，其中 k 是非负数
+要求使用空间复杂度为 O(1) 的 原地 算法。
+*/
+// 方法一：使用环状替换
+// 注意这里使用count进行计数
+class Solution {
+public:
+  void rotate(vector<int>& nums, int k) {
+    int n = nums.size(), count = 0;
+    k %= n;
+    for(int i = 0; count < n; i ++) {
+      int c = i, prev = nums[i];
+      do {
+        int j = (c + k) % n;
+        int curr = nums[j];
+        nums[j] = prev;
+        prev = curr;
+        c = j;
+        count ++;
+      } while(c != i);
+    }
+  }
+};
+
+// 方法二：使用反转
+// 这个方法基于这个事实：当我们旋转数组 k 次， k%n 个尾部元素会被移动到头部，剩下的元素会被向后移动。
+class Solution {
+public:
+  void rotate(vector<int>& nums, int k) {
+    int n = nums.size();
+    k %= n;
+    reverse(nums, 0, n - 1);
+    reverse(nums, 0, k - 1);
+    reverse(nums, k, n - 1);
+  }
+
+  void reverse(vector<int>& nums, int start, int end) {
+    while(start < end) {
+      swap(nums[start ++], nums[end --]);
+    }
+  }
+};
+
+
+/*=====================构造排列组合并去重==================================================================================================*/
+// 15题、16题都是二分查找，最重要的是学习如何对排列组合进行去重复
 /*15. 三数之和*/
 /*
 给你一个包含 n 个整数的数组 nums，判断 nums 中是否存在三个元素 a，b，c ，使得 a + b + c = 0 ？请你找出所有满足条件且不重复的三元组。
@@ -67,6 +211,7 @@ public:
     vector< vector<int> > res;
     if(nums.size() < 3)
       return res;
+    // 排序是遍历构造组合时的技巧
     sort(nums.begin(), nums.end());
     for(int i = 0; i < nums.size() - 2; i ++) {
       // 剪枝
@@ -100,61 +245,45 @@ public:
 };
 
 
-/*11. 盛最多水的容器*/
+/*16. 最接近的三数之和*/
 /*
-给你 n 个非负整数 a1，a2，...，an，每个数代表坐标中的一个点 (i, ai) 。在坐标内画 n 条垂直线，垂直线 i 的两个端点分别为 (i, ai) 和 (i, 0) 。找出其中的两条线，使得它们与 x 轴共同构成的容器可以容纳最多的水。
+给定一个包括 n 个整数的数组 nums 和 一个目标值 target。找出 nums 中的三个整数，使得它们的和与 target 最接近。返回这三个数的和。假定每组输入只存在唯一答案。
 */
-// 双指针
 class Solution {
 public:
+  int threeSumClosest(vector<int>& nums, int target) {
+    long ans = INT_MAX;
+    sort(nums.begin(), nums.end());
 
-  int maxArea2(vector<int>& height) {
-    int l = 0, r = height.size() - 1;
-    int ans = 0;
-    while (l < r) {
-        int area = min(height[l], height[r]) * (r - l);
-        ans = max(ans, area);
-        if (height[l] <= height[r]) {
-            ++l;
+    // 根据差值的绝对值来更新答案
+    auto update = [&](long cur) {
+      if (abs(cur - target) < abs(ans - target)) {
+        ans = cur;
+      }
+    };
+
+    for(int i = 0; i < nums.size() - 2; i ++) {
+      if(i > 0 && nums[i] == nums[i - 1])
+        continue ;
+      int l = i + 1, r = nums.size() - 1;
+      while(l < r) {
+        int sum3 = nums[i] + nums[l] + nums[r];
+        if(sum3 == target)
+          return target;
+        update(sum3);
+        if(sum3 < target) {
+          while(l < r && nums[l] == nums[l + 1]) l ++;
+          l ++;
         } else {
-            --r;
-        }
-    }
-    return ans;
-  }
-
-  int maxArea(vector<int>& height) {
-    
-    int l = 0, r = height.size()-1;
-    int hl = height[l];
-    int hr = height[r];
-    int ans = (r - l) * min(hl, hr);
-
-    while( l < r ) {
-      while( hl <= hr && l < r  ) {
-        ++ l;
-        if( height[l] > hl ) {
-          hl = height[l];
-          ans = max( ans, (r - l) * min(hl, hr) );
+          while(r > l && nums[r] == nums[r - 1]) r --;
+          r --;
         }
       }
-      ans = max( ans, (r - l) * hr );
-      // cout << "1# ans: " << ans << ", r: " << r << ", l: " << l << ", h: " << hr << endl;
-
-      while( hr < hl && l < r  ) {
-        -- r;
-        if( height[r] > hr ) {
-          hr = height[r];
-          ans = max( ans, (r - l) * min(hl, hr) );
-        }
-      }
-      ans = max( ans, (r - l) * hl );
-
-      // cout << "2# ans: " << ans << ", r: " << r << ", l: " << l << ", h: " << hl << endl;
     }
     return ans;
   }
 };
+
 
 /*46. 全排列*/
 /*给定一个 没有重复 数字的序列，返回其所有可能的全排列。*/
@@ -213,4 +342,109 @@ public:
     }
   }
 };
+/*=========================================================================================================================================*/
 
+
+/*剑指 Offer 29. 顺时针打印矩阵*/
+/*输入一个矩阵，按照从外向里以顺时针的顺序依次打印出每一个数字。*/
+class Solution {
+public:
+  vector<int> spiralOrder(vector<vector<int>>& matrix) {
+    int nrow = matrix.size();
+    if(nrow == 0) return vector<int>();
+    int ncol = matrix[0].size();
+    if(ncol == 0) return vector<int>();
+    int t = 0, b = nrow - 1, l = 0, r = ncol - 1, x = 0;
+    vector<int> ans(nrow * ncol);
+    while(1) {
+      // 从左往右
+      for(int i = l; i <= r; i ++) ans[x ++] = matrix[t][i];
+      // 最上层遍历完，下移
+      if(++ t > b) break;
+
+      // 从上往下
+      for(int i = t; i <= b; i ++) ans[x ++] = matrix[i][r];
+      // 最右侧遍历完，左移
+      if(l > -- r) break;
+
+      // 从右往左
+      for(int i = r; i >= l; i --) ans[x ++] = matrix[b][i];
+      // 最下层遍历完，上移
+      if(t > -- b) break;
+
+      // 从下往上
+      for(int i = b; i >= t; i --) ans[x ++] = matrix[i][l];
+      // 最左侧遍历完，右移
+      if(++ l > r) break;
+    }
+    return ans;
+  }
+};
+
+
+/*41. 缺失的第一个正数 (287.寻找重复数 也用到了这一题的技巧，原地判重)*/
+/*给你一个未排序的整数数组，请你找出其中没有出现的最小的正整数。*/
+//对于一个长度为 N 的数组，其中没有出现的最小正整数只能在 [1, N+1] 中。这是因为如果 [1, N] 都出现了，那么答案是 N+1，否则答案是 [1, N] 中没有出现的最小正整数
+class Solution {
+public:
+    int firstMissingPositive(vector<int>& nums) {
+        int n = nums.size();
+        for (int& num: nums) {
+            if (num <= 0) {
+                num = n + 1;
+            }
+        }
+        for (int i = 0; i < n; ++i) {
+            int num = abs(nums[i]);
+            if (num <= n) {
+                nums[num - 1] = -abs(nums[num - 1]);
+            }
+        }
+        for (int i = 0; i < n; ++i) {
+            if (nums[i] > 0) {
+                return i + 1;
+            }
+        }
+        return n + 1;
+    }
+};
+
+// 方法二：置换
+class Solution {
+public:
+    int firstMissingPositive(vector<int>& nums) {
+        int n = nums.size();
+        for (int i = 0; i < n; ++i) {
+            while (nums[i] > 0 && nums[i] <= n && nums[nums[i] - 1] != nums[i]) {
+                swap(nums[nums[i] - 1], nums[i]);
+            }
+        }
+        for (int i = 0; i < n; ++i) {
+            if (nums[i] != i + 1) {
+                return i + 1;
+            }
+        }
+        return n + 1;
+    }
+};
+
+
+/***209. 长度最小的子数组*/
+/*
+给定一个含有 n 个正整数的数组和一个正整数 s ，找出该数组中满足其和 ≥ s 的长度最小的 连续 子数组，并返回其长度。如果不存在符合条件的子数组，返回 0。
+*/
+class Solution {
+public:
+  int minSubArrayLen(int s, vector<int>& nums) {
+    int sum = 0, i = 0, ans = INT_MAX;
+    for( int j = 0; j < nums.size(); j ++ ) {
+      sum += nums[j];
+      while( i <= j && sum >= s ) {
+        ans = min( ans, (j - i + 1));
+        sum -= nums[i];
+        i ++;
+      }
+    }
+    return (ans == INT_MAX) ? 0 : ans;
+  }
+};
