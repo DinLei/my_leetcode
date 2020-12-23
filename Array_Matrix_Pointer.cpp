@@ -448,3 +448,70 @@ public:
     return (ans == INT_MAX) ? 0 : ans;
   }
 };
+
+
+/*166. 分数到小数*/
+/*
+给定两个整数，分别表示分数的分子 numerator 和分母 denominator，以 字符串形式返回小数 。
+如果小数部分为循环小数，则将循环的部分括在括号内。
+如果存在多个答案，只需返回 任意一个 。
+对于所有给定的输入，保证 答案字符串的长度小于 104 。
+*/
+// 这道题目的关键用到一个数学定理：一个分数不是有限小数，就是无限循环小数
+class Solution {
+public:
+    string fractionToDecimal(int numerator, int denominator) {
+        if (numerator == 0) {
+            return "0";
+        }
+
+        string res;
+        bool isNegative = false;
+        if (numerator > 0 && denominator < 0 || numerator < 0 && denominator > 0) {
+            isNegative = true;
+        }
+
+        long num = labs(numerator);
+        long denom = labs(denominator);
+        long remainder = num;
+        if (num >= denom) {
+            remainder = num % denom;
+            res += to_string(num / denom);
+        }
+
+        if (remainder == 0) {
+            return isNegative ? "-" + res : res;
+        }
+
+        // No intergral part, put 0 in front
+        if (remainder == labs(num)) {
+            res += "0";
+        }
+
+        res += ".";
+        unordered_map<int, int> rem2Pos;
+        int index = res.size();
+
+       // Loop until find recuring remainder not recuring digits in quotient 
+        while (remainder && !rem2Pos.count(remainder)) {
+            rem2Pos[remainder] = index++;
+            // 技巧，小数部分的递归除法操作细节
+            remainder *= 10;
+            int digit = remainder / denom;
+            remainder = remainder % denom;
+            res += to_string(digit);
+        }
+
+        if (rem2Pos.count(remainder)) {
+            res.insert(rem2Pos[remainder], "(");
+            res.push_back(')');
+        }
+
+        return isNegative ? "-" + res : res;
+    }
+};
+
+// 作者：jyj407
+// 链接：https://leetcode-cn.com/problems/fraction-to-recurring-decimal/solution/zhong-gui-zhong-ju-xi-jie-kao-cha-ti-by-jyj407/
+// 来源：力扣（LeetCode）
+// 著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
