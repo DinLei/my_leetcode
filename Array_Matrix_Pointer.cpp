@@ -410,6 +410,23 @@ public:
     }
 };
 
+
+/*287.寻找重复数*/
+/*给定一个包含 n + 1 个整数的数组 nums，其数字都在 1 到 n 之间（包括 1 和 n），可知至少存在一个重复的整数。假设只有一个重复的整数，找出这个重复的数。*/
+class Solution {
+public:
+  int findDuplicate(vector<int>& nums) {
+    for(int i = 0; i < nums.size(); i ++) {
+      int x = abs(nums[i]);
+      if(nums[x - 1] < 0)
+        return x;
+      else
+        nums[x - 1] = -abs(nums[x - 1]);
+    }
+    return -1;
+  }
+};
+
 // 方法二：置换
 class Solution {
 public:

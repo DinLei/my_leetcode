@@ -12,6 +12,7 @@ public:
         int n = s.size();
         vector<vector<int>> dp(n, vector<int>(n));
         string ans;
+        // 这里通过显示定义距离l进行遍历控制
         for (int l = 0; l < n; ++l) {
             for (int i = 0; i + l < n; ++i) {
                 int j = i + l;
@@ -57,7 +58,6 @@ int longestPalindromeSubseq(string s) {
 /*72. 编辑距离*/
 /*
 给你两个单词 word1 和 word2，请你计算出将 word1 转换成 word2 所使用的最少操作数 。
-
 你可以对一个单词进行如下三种操作：
 
 插入一个字符
@@ -95,6 +95,14 @@ public:
 };
 
 /*1143. 最长公共子序列*/
+/*
+给定两个字符串 text1 和 text2，返回这两个字符串的最长公共子序列的长度。
+
+一个字符串的 子序列 是指这样一个新的字符串：它是由原字符串在不改变字符的相对顺序的情况下删除某些字符（也可以不删除任何字符）后组成的新字符串。
+例如，"ace" 是 "abcde" 的子序列，但 "aec" 不是 "abcde" 的子序列。两个字符串的「公共子序列」是这两个字符串所共同拥有的子序列。
+
+若这两个字符串没有公共子序列，则返回 0。
+*/
 class Solution {
 public:
   int longestCommonSubsequence(string text1, string text2) {
@@ -267,6 +275,7 @@ public:
   bool isMatch(string s, string p) {
     int n1 = s.size(), n2 = p.size();
     if(n1 != 0 && n2 == 0) return false;
+    // 我们用 f[i][j] 表示 s 的前 i 个字符与 p 中的前 j 个字符是否能够匹配
     vector< vector<int> > dp(n1 + 1, vector(n2 + 1, 0));
     dp[0][0] = 1;
     auto match = [&s, &p](int i, int j) {
@@ -278,9 +287,12 @@ public:
     };
     for(int i = 0; i <= n1; i ++) {
       for(int j = 1; j <= n2; j ++) {
+        // 当前字符串是 *
         if(p[j - 1] == '*') {
+          // 和 * 前面的 字符 比较，如果匹配上，* 号做重复匹配用
           if(match(i, j - 1)) 
             dp[i][j] |= dp[i - 1][j];
+          // 和 * 前面字符，取 前面的前面 的状态
           if(j >= 2)
             dp[i][j] |= dp[i][j - 2];
         } else {
@@ -416,7 +428,7 @@ public:
 
 
 // 32、91、offer46，注意状态的跳转 //
-/**32. 最长有效括号*/
+/***32. 最长有效括号*/
 /*给定一个只包含 '(' 和 ')' 的字符串，找出最长的包含有效括号的子串的长度。*/
 /*我们定义 dp[i] 表示以下标 i 字符结尾的最长有效括号的长度。*/
 class Solution {
@@ -434,8 +446,11 @@ public:
                         dp[i] = dp[i] + dp[i - 2];
                     }
                 } else if (dp[i - 1] > 0) {
+                    // s[i−dp[i−1]−1] 与 当前i的对称位置
                     if ((i - dp[i - 1] - 1) >= 0 && s[i - dp[i - 1] - 1] == '(') {
                         dp[i] = dp[i - 1] + 2;
+                        // 值得注意的是，i - dp[i - 1] - 1i−dp[i−1]−1 和 ii 组成了有效括号对，这将是一段独立的有效括号序列，
+                        // 如果之前的子序列是形如 (...)(...) 这种序列，那么当前位置的最长有效括号长度还需要加上这一段。所以：
                         if ((i - dp[i - 1] - 2) >= 0) {
                             dp[i] = dp[i] + dp[i - dp[i - 1] - 2];
                         }
@@ -501,7 +516,6 @@ public:
 /**121. 买卖股票的最佳时机*/
 /*
 给定一个数组，它的第 i 个元素是一支给定股票第 i 天的价格。
-
 如果你最多只允许完成一笔交易（即买入和卖出一支股票一次），设计一个算法来计算你所能获取的最大利润。
 
 注意：你不能在买入股票前卖出股票。
@@ -625,8 +639,10 @@ public:
 class Solution {
 public:
   int numSquares(int n) {
+    // dp[i] 定义为 构成 第i个数 最少需要的完全平方数
     vector<int> dp(n + 1, 0);
     for(int i = 1; i <= n; i ++) {
+      // 最多有 i 个 1
       dp[i] = i;
       for(int j = 1; i - j * j >= 0; j ++) 
         dp[i] = min(dp[i], dp[i - j * j] + 1);
