@@ -343,6 +343,44 @@ public:
   }
 };
 
+
+/*【算法系列】-开根号*/
+// 方法一: 二分查找法
+double sqrt1(double num){   
+    if(num < 0) {
+      return -1;
+    }
+    double last = 0.0, low = 0;
+    double mid;
+    double up = (num >= 1 ? num : 1); 
+    mid = (low + up) / 2; 
+    do {
+      if(mid * mid > num) {
+        up = mid;
+      } else {
+        low = mid;
+      }
+      last = mid;
+      mid = (up + low) / 2;        
+    } while(abs(mid - last) > 1e-5);
+  
+    return mid;   
+}
+
+// 方法二: 牛顿迭代法
+double sqrt2(double num) {
+  if(num < 0) {
+      return -1;
+  }
+  double a = 2;
+  double b = num / a;
+  while(abs(a - b) > 1e-5) {
+      a = (a + b) / 2;
+      b = num / a;
+  }
+  return a;
+}
+
 /*=========================================================================================================================================*/
 
 

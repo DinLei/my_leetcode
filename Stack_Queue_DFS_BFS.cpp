@@ -150,6 +150,7 @@ private:
     bool dfs(vector<vector<char>>& board, string word, int i, int j, int k) {
         if(i >= rows || i < 0 || j >= cols || j < 0 || board[i][j] != word[k]) return false;
         if(k == word.size() - 1) return true;
+        // 只要将遍历过的值临时改变就不会重复使用了
         board[i][j] = '\0';
         // 联合判断的写法技巧
         bool res = dfs(board, word, i + 1, j, k + 1) || dfs(board, word, i - 1, j, k + 1) || 
