@@ -292,12 +292,12 @@ public:
             head = head->next;
         }
         while( !stk.empty() ) {
-             if( front->val == stk.top() ){
-                 stk.pop();
-                 front = front->next;
-             } else {
-                 break;
-             }
+            if( front->val == stk.top() ){
+               stk.pop();
+               front = front->next;
+            } else {
+               break;
+            }
         }
         return stk.empty() || stk.size() == 1;
     }
@@ -308,6 +308,7 @@ class Solution {
 public:
   // 迭代
   ListNode* reverseList2(ListNode* head) {
+    // 注意初始化一定要为null
     ListNode* prev = nullptr, *curr = head;
     while(curr) {
       ListNode* tmp = curr->next;
@@ -322,6 +323,7 @@ public:
     if(head == nullptr || head->next == nullptr)
       return head;
     ListNode* curr = reverseList(head->next);
+    // 技巧
     head->next->next = head;
     head->next = nullptr;
     return curr;
@@ -354,7 +356,8 @@ public:
     ListNode* prev = dummy, * end = dummy;
 
     while( end->next != NULL ) {
-      for(int i=0; i<k && end!=NULL; i++) end = end->next;
+      for(int i = 0; i < k && end != NULL; i ++) 
+        end = end->next;
       if(end == NULL) break;
       ListNode* start = prev->next, * next = end->next;
       end->next = NULL;   // 方便翻转子链表

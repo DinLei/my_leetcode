@@ -67,6 +67,7 @@ public:
   int dfs(vector<vector<int>>& grid, int i, int j, int nrow, int ncol) {
     if(i < 0 || i == nrow || j < 0 || j == ncol || grid[i][j] != 1)
       return 0;
+    // 遍历过的一定要改变状态
     grid[i][j] = 0;
     int area = 1;
     for(int x = 0; x < 4; x ++) {

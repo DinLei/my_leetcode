@@ -260,6 +260,27 @@ public:
 /*114. 二叉树展开为链表*/
 /*
 给定一个二叉树，原地将它展开为一个单链表。
+例如，给定二叉树
+
+    1
+   / \
+  2   5
+ / \   \
+3   4   6
+
+将其展开为：
+
+1
+ \
+  2
+   \
+    3
+     \
+      4
+       \
+        5
+         \
+          6
 */
 //方法一：前序遍历和展开同步进行。关键是将父节点保存下来，左右子节点压栈，先右后左
 // 树 和 链表 一样，只要想办法把指针指对了就行。指针对应信息序列内部会保存下来。
@@ -297,8 +318,10 @@ public:
         TreeNode *curr = root;
         while (curr != nullptr) {
             if (curr->left != nullptr) {
+                // next 做保留指针用
                 auto next = curr->left;
-                auto predecessor = next;
+                auto predecessor = curr->left;
+                // 找到左子树的右叶子节点
                 while (predecessor->right != nullptr) {
                     predecessor = predecessor->right;
                 }
@@ -408,7 +431,6 @@ public:
         if (node == nullptr) {
             return 0;
         }
-        
         // 递归计算左右子节点的最大贡献值
         // 只有在最大贡献值大于 0 时，才会选取对应子节点
         int leftGain = max(maxGain(node->left), 0);
@@ -619,6 +641,11 @@ public:
 };
 
 /*958. 二叉树的完全性检验*/
+/*
+给定一个二叉树，确定它是否是一个完全二叉树。
+百度百科中对完全二叉树的定义如下：
+若设二叉树的深度为 h，除第 h 层外，其它各层 (1～h-1) 的结点数都达到最大个数，第 h 层所有的结点都连续集中在最左边，这就是完全二叉树。（注：第 h 层可能包含 1~ 2h 个节点。）
+*/
 class Solution {
 public:
   bool isCompleteTree(TreeNode* root) {
@@ -627,6 +654,7 @@ public:
     TreeNode* prev = root;
     while(!que.empty()) {
       TreeNode* curr = que.front(); que.pop();
+      // 层序遍历，如果前面访问的节点为null，当前的不为null，说明非完全
       if(!prev && curr) return false;
       if(curr) {
         que.push(curr->left);
