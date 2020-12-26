@@ -179,7 +179,7 @@ public:
     while( low <= up ) {
       // 如果总个数是偶数，那左右两边一样多；如果是奇数，那左边要多一个，那一个即为中位数
       int lp1 = (low + up) / 2;           // 数组1 左边的元素个数
-      int lp2 = (n1 + n2 + 1)/2 - lp1;    // 数组2 左边的元素个数
+      int lp2 = (n1 + n2 + 1) / 2 - lp1;    // 数组2 左边的元素个数
 
       int L1 = (lp1 == 0) ? INT_MIN : nums1[lp1 - 1];
       int R1 = (lp1 == n1) ? INT_MAX : nums1[lp1];
@@ -191,7 +191,7 @@ public:
       else if( L2 > R1 )
         low = lp1 + 1;
       else 
-        return ((n1 + n2) % 2 == 0) ? (max(L1, L2) + min(R1, R2))/2.0 : max(L1, L2);
+        return ((n1 + n2) % 2 == 0) ? (max(L1, L2) + min(R1, R2)) / 2.0 : max(L1, L2);
     }
     return 0;
   }
@@ -205,7 +205,7 @@ public:
         assert(1 <= k && k <= nums1.size() + nums2.size());
         int le = max(0, int(k - nums2.size())), ri = min(k, int(nums1.size()));
         while(le < ri){ 
-            // m 是 数组1 的 右半部分 的 第一个数
+            // m 是 数组1 的 右半部分 的 第一个数，也就是左边部分元素的个数
             int m = (le + ri) >> 1;
             // k - m - 1 就是 数组2 的 左半部分 的 最后一个数
             if(nums2[k - m - 1] > nums1[m]) le = m + 1;
@@ -313,7 +313,7 @@ public:
     int findKthLargest(vector<int>& nums, int k) {
         int heapSize = nums.size();
         buildMaxHeap(nums, heapSize);
-        for (int i = nums.size() - 1; i >= nums.size() - k + 1; -- i) {
+        for (int i = heapSize - 1; i >= heapSize - k + 1; -- i) {
             swap(nums[0], nums[i]);
             -- heapSize;
             maxHeapify(nums, 0, heapSize);
@@ -403,3 +403,5 @@ public:
         return ret;
     }
 };
+
+
