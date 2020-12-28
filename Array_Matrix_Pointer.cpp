@@ -637,8 +637,10 @@ public:
       // 可以是0本身，即 S[idx]=0, 但要排除0开头
       if(i > idx && S[idx] == '0') break;
       curr = curr * 10 + (S[i] - '0');
-      // curr 需要等于前两个数的和
+      // 数值不能超
       if(curr > INT_MAX) break;
+      // 首先得满足斐波那契式序列有了两个数
+      // curr 需要等于前两个数的和
       if(ans.size() >= 2) {
         if(sum > curr) continue;
         else if(sum < curr) break;
@@ -696,9 +698,30 @@ public:
     dp[1] = 1;
     for (int i = 2; i <= n; i++) {
       for (int j = 1; j <= i / 2; j++) {
-        dp[i] = max(dp[i], (max(j, dp[j])) * (max(i - j, dp[i - j])));
+        // 绳子分成两段，一段是j，另一段是i - j，此时i - j要判断是否需要继续切割
+        dp[i] = max(dp[i], j * max(i - j, dp[i - j]));
       }
     }
     return dp[n];
+  }
+};
+
+/*剑指 Offer 14- II. 剪绳子 II*/
+/*
+给你一根长度为 n 的绳子，请把绳子剪成整数长度的 m 段（m、n都是整数，n>1并且m>1），每段绳子的长度记为 k[0],k[1]...k[m - 1] 。请问 k[0]*k[1]*...*k[m - 1] 可能的最大乘积是多少？例如，当绳子的长度是8时，我们把它剪成长度分别为2、3、3的三段，此时得到的最大乘积是18。
+答案需要取模 1e9+7（1000000007），如计算初始结果为：1000000008，请返回 1。
+*/
+class Solution {
+public:
+  int cuttingRope(int n) {
+    if (n <= 3) 
+      return n - 1;
+    long rs = 1;
+    while (n > 4) {
+      rs *= 3;
+      rs %= 1000000007;
+      n -= 3;
+    }
+    return (rs * n) % 1000000007;
   }
 };

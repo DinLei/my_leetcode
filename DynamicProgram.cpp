@@ -692,7 +692,7 @@ public:
 网格中的障碍物和空位置分别用 1 和 0 来表示。
 */
 //memo[i][j]的含义是：到达x = i, y = j的路径数目
-void initMemo(vector<vector<int>>&obstacleGrid,vector<vector<int>>& memo)
+void initMemo(vector<vector<int>>& obstacleGrid, vector<vector<int>>& memo)
 {
     int row = obstacleGrid.size(), column = obstacleGrid[0].size();
     memo[0][0] = 1;
@@ -788,13 +788,13 @@ class Solution {
         if (rem == 0) return 0;
         if (count[rem - 1] != 0) return count[rem - 1];
         int Min = INT_MAX;
-        for (int coin:coins) {
+        for (int coin: coins) {
             int res = dp(coins, rem - coin);
             if (res >= 0 && res < Min) {
                 Min = res + 1;
             }
         }
-        count[rem - 1] = Min == INT_MAX ? -1 : Min;
+        count[rem - 1] = (Min == INT_MAX) ? -1 : Min;
         return count[rem - 1];
     }
 public:
@@ -931,3 +931,6 @@ public:
     return dp[n - 1][range + S];
   }
 };
+
+/**剑指 Offer 14- I. 剪绳子*/
+/*解法见Array_Matrix_Pointer.cpp*/
