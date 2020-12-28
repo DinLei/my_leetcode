@@ -229,6 +229,7 @@ public:
 
 
 /*剑指 Offer 40. 最小的k个数*/
+/*改变说法: 给定数组和一个数m，求该数组中与m最近的k个数，这道题用堆也可以*/
 class Solution {
 public:
   vector<int> getLeastNumbers(vector<int>& arr, int k) {
@@ -256,6 +257,32 @@ public:
     else if(order > k) return divide(arr, l, i - 1, k);
     else return divide(arr, i + 1, r, k - order);
   }
+};
+
+// 堆的作法
+class Solution {
+public:
+    vector<int> getLeastNumbers(vector<int>& arr, int k) {
+        vector<int>vec(k, 0);
+        if (k == 0) { // 排除 0 的情况
+            return vec;
+        }
+        priority_queue<int> Q;
+        for (int i = 0; i < k; ++i) {
+            Q.push(arr[i]);
+        }
+        for (int i = k; i < (int)arr.size(); ++i) {
+            if (Q.top() > arr[i]) {
+                Q.pop();
+                Q.push(arr[i]);
+            }
+        }
+        for (int i = 0; i < k; ++i) {
+            vec[i] = Q.top();
+            Q.pop();
+        }
+        return vec;
+    }
 };
 
 
