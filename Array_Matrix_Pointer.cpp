@@ -514,6 +514,10 @@ public:
 /***209. 长度最小的子数组*/
 /*
 给定一个含有 n 个正整数的数组和一个正整数 s ，找出该数组中满足其和 ≥ s 的长度最小的 连续 子数组，并返回其长度。如果不存在符合条件的子数组，返回 0。
+示例：
+输入：s = 7, nums = [2,3,1,2,4,3]
+输出：2
+解释：子数组 [4,3] 是该条件下的长度最小的子数组。
 */
 class Solution {
 public:
@@ -556,28 +560,30 @@ public:
         long num = labs(numerator);
         long denom = labs(denominator);
         long remainder = num;
+        // 如果分子大于分母
         if (num >= denom) {
             remainder = num % denom;
+            // 大于0的部分
             res += to_string(num / denom);
         }
-
+        // 是不是整除
         if (remainder == 0) {
             return isNegative ? "-" + res : res;
         }
 
-        // No intergral part, put 0 in front
+        // 如果分子小于分母，就是0开头
         if (remainder == labs(num)) {
             res += "0";
         }
-
+        // 加小数点开始小数部分
         res += ".";
         unordered_map<int, int> rem2Pos;
         int index = res.size();
 
-       // Loop until find recuring remainder not recuring digits in quotient 
+       // 分数一定是有限小数或者无限循环小数，这里通过 remainder=0 或者 remainder重复出现 作为循环退出的判断条件
         while (remainder && !rem2Pos.count(remainder)) {
             rem2Pos[remainder] = index++;
-            // 技巧，小数部分的递归除法操作细节
+            // 技巧，分数除法向后借10
             remainder *= 10;
             int digit = remainder / denom;
             remainder = remainder % denom;
@@ -585,6 +591,7 @@ public:
         }
 
         if (rem2Pos.count(remainder)) {
+          // 上面记录index是为了下面插入'('，循环小数的开始位置
             res.insert(rem2Pos[remainder], "(");
             res.push_back(')');
         }
