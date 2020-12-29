@@ -22,7 +22,7 @@ public:
 };
 
 
-/*76. 最小覆盖子串*/
+/***76. 最小覆盖子串*/
 /*
 给你一个字符串 s 、一个字符串 t 。返回 s 中涵盖 t 所有字符的最小子串。如果 s 中不存在涵盖 t 所有字符的子串，则返回空字符串 "" 。
 注意：如果 s 中存在这样的子串，我们保证它是唯一的答案。
@@ -40,7 +40,8 @@ public:
         int len = INT_MAX;
         while(end < s.size()) {
             /* 右边加，当这个字符是滑动窗缺少的字符时，计数器减一 */
-            if(map[s[end ++]] -- > 0) -- counter;
+            if(map[s[end ++]] -- > 0) 
+                -- counter;
             while(counter == 0) {
                 if(end - begin < len) {
                     len = end - begin;
@@ -102,7 +103,8 @@ public:
 };
 
 
-/*11. 盛最多水的容器*/
+/*====================================最大容积问题====================================*/
+/**11. 盛最多水的容器*/
 /*
 给你 n 个非负整数 a1，a2，...，an，每个数代表坐标中的一个点 (i, ai) 。在坐标内画 n 条垂直线，垂直线 i 的两个端点分别为 (i, ai) 和 (i, 0) 。找出其中的两条线，使得它们与 x 轴共同构成的容器可以容纳最多的水。
 */
@@ -124,6 +126,66 @@ public:
     return ans;
   }
 };
+
+
+/**42. 接雨水*/
+/*
+给定 n 个非负整数表示每个宽度为 1 的柱子的高度图，计算按此排列的柱子，下雨之后能接多少雨水。
+*/
+class Solution {
+public:
+  int trap2(vector<int>& height) {
+    int n = height.size(), ans = 0;
+    if(n <= 1)
+      return 0;
+    vector<int> leftMax(n, 0), rightMax(n, 0);
+    leftMax[0] = height[0];
+    for(int i = 1; i < n; i ++) {
+      leftMax[i] = max(height[i], leftMax[i-1]);
+    }
+    rightMax[n-1] = height[n-1];
+    for(int i = n-2; i >= 0; i --) {
+      rightMax[i] = max(height[i], rightMax[i+1]);
+    }
+    for(int i = 1; i <= n-2; i ++) {
+      ans += min(leftMax[i], rightMax[i]) - height[i];
+    }
+    return ans;
+  }
+
+  int trap1(vector<int>& height) {
+    int n = height.size(), ans = 0;
+    if(n <= 1)
+      return 0;
+    stack<int> stk; stk.push(0);
+    for(int i = 1; i < n; i ++) {
+      // 单调递减栈
+      while(!stk.empty() && height[i] >= height[stk.top()]) {
+        int base = stk.top(); stk.pop();
+        if(stk.empty()) break;
+        ans += (min(height[i], height[stk.top()]) - height[base]) * (i - stk.top() - 1);
+      }
+      stk.push(i);
+    }
+    return ans;
+  }
+
+  int trap(vector<int>& height) {
+    int leftMax = 0, rightMax = 0, ans = 0;
+    int left = 0, right = height.size()-1;
+    while(left < right) {
+      if(height[left] < height[right]) {
+        (height[left] >= leftMax) ? leftMax = height[left] : ans += (leftMax - height[left]);
+        left ++;
+      } else {
+        (height[right] >= rightMax) ? rightMax = height[right] : ans += (rightMax - height[right]);
+        right --;
+      }
+    }
+    return ans;
+  }
+};
+/*===========================================================================================*/
 
 
 /*33. 搜索旋转排序数组*/
@@ -368,7 +430,6 @@ public:
 };
 
 /*============================================================================================================================================*/
-
 
 /*【算法系列】-开根号*/
 // 方法一: 二分查找法

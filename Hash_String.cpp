@@ -67,3 +67,41 @@ public:
 };
 
 
+/***76. 最小覆盖子串*/
+/* 
+这道题我也放在了Array_Matrix_Pointer.cpp里面了。
+滴滴面试有一种变种: 
+现有m种颜色的珠子，一串珠子手链，共n个珠子（n >= m）且这串珠子一定包含所有的颜色，
+请找出包含这m个颜色的最小子珠串
+*/
+/*
+给你一个字符串 s 、一个字符串 t 。返回 s 中涵盖 t 所有字符的最小子串。如果 s 中不存在涵盖 t 所有字符的子串，则返回空字符串 "" 。
+注意：如果 s 中存在这样的子串，我们保证它是唯一的答案。
+*/
+class Solution {
+public:
+    string minWindow(string s, string t) {
+        vector<int> map(128, 0);
+        // 存放目标t需要的字符计数
+        for(auto ch : t) ++map[ch];
+        // 目标t的字符数量
+        int counter = t.size();
+        int begin = 0, end = 0;
+        int head = 0;
+        int len = INT_MAX;
+        while(end < s.size()) {
+            /* 右边加，当这个字符是滑动窗缺少的字符时，计数器减一 */
+            if(map[s[end ++]] -- > 0) 
+                -- counter;
+            while(counter == 0) {
+                if(end - begin < len) {
+                    len = end - begin;
+                    head = begin;
+                }
+                /* 左边减，当这个字符是滑动窗不缺也不富余的字符时，计数器加一 */
+                if(map[s[begin ++]] ++ == 0) ++ counter;
+            }
+        }
+        return len == INT_MAX ? "" : s.substr(head, len);
+    }
+};

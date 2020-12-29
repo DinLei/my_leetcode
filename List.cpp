@@ -382,3 +382,70 @@ public:
   }
 };
 
+
+/*剑指 Offer 36. 二叉搜索树与双向链表*/
+/*
+输入一棵二叉搜索树，将该二叉搜索树转换成一个排序的循环双向链表。要求不能创建任何新的节点，只能调整树中节点指针的指向。
+*/
+// 迭代
+class Solution {
+public:
+  Node* treeToDoublyList(Node* root) {
+    if(root == NULL)
+      return NULL;
+    stack<Node*> stk; 
+    Node* next = root, *p = new Node(0);
+    Node* ans = p, * tmp;
+    while( !stk.empty() || next ) {
+      if( next ) {
+        stk.push(next);
+        next = next->left;
+      } else {
+        next = stk.top(); stk.pop();
+        tmp = p;
+        p->right = next;
+        p = p->right;
+        p->left = tmp;
+        next = next->right;
+      }
+    }
+    ans = ans->right;
+    ans->left = p; p->right = ans;
+    return ans;
+  }
+}
+// 递归
+class Solution {
+private: 
+  Node* head, *tail;
+public:
+  Node* treeToDoublyList(Node* root) {
+    if(!root) {
+      return nullptr;
+    }
+
+    inorder(root); // 构造出链表的所有结构，除了头连尾和尾连头的两个指针
+    head -> left = tail; // 补上头连尾
+    tail -> right = head; // 补上尾连头
+
+    return head; // 返回头
+  }
+  void inorder(Node* root) {
+    if(!root) {
+      return;
+    }
+
+    inorder(root -> left); // 左
+
+    if(!tail) {
+      head = root; // 当tail还不存在，也就是root此时在整个BST的最左边的节点，这个节点就是head
+    }
+    else {
+      tail -> right = root; // 前一个节点的right是当前节点
+      root -> left = tail; // 当前节点的left是前一个节点
+    }
+    tail = root; // 将前一个节点更新为当前节点（所以到最后，tail就会挪到整个BST的最右边的节点，这个节点就是链表的尾节点）
+
+    inorder(root -> right); // 右
+  }
+};

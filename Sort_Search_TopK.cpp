@@ -432,3 +432,90 @@ public:
 };
 
 
+/*440. 字典序的第K小数字*/
+/*
+给定整数 n 和 k，找到 1 到 n 中字典序第 k 小的数字。
+注意：1 ≤ k ≤ n ≤ 109。
+*/
+class Solution {
+public:
+  long getCount(long prefix, long n) {
+    long curr = prefix;
+    long next = curr + 1;
+    long count = 0;
+    // 数值字典树的层节点统计方法
+    while( curr <= n ) {
+      count += min(n+1, next) - curr;
+      // printf("curr=%d, next=%d, a_count=%d, t_count=%d\n", curr, next, min(n+1, next) - curr, count);
+      curr *= 10;
+      next *= 10;
+    }
+    return count;
+  }
+
+  int findKthNumber(int n, int k) {
+    long pos = 1;
+    long prefix = 1;
+    while( pos < k ) {
+      long count = getCount(prefix, n);
+      // printf("n: %d, prefix: %d, count: %d \n", n, prefix, count);
+      if( pos + count > k ) {
+        // 说明在这个前缀树区间内
+        prefix *= 10;   // 进入子树
+        pos ++;
+      } else {
+        prefix ++;      // 进入下一个前缀
+        pos += count;
+      }
+    }
+    // cout << pos << ", " << prefix << endl;
+    return static_cast<int>(prefix);
+  }
+};
+
+/*386. 字典序排数*/
+/*
+给定一个整数 n, 返回从 1 到 n 的字典顺序。
+例如，
+给定 n =1 3，返回 [1,10,11,12,13,2,3,4,5,6,7,8,9] 。
+请尽可能的优化算法的时间复杂度和空间复杂度。 输入的数据 n 小于等于 5,000,000。
+*/
+class Solution {
+private:
+  vector<int> ans;
+public:
+/*
+  int bfs(int prefix, int n) {
+    int curr = prefix, next = prefix + 1, count = 0;
+    while(curr <= n) {
+      int low = curr, up = min(n + 1, next);
+      count += (up - low);
+      while(low < up)
+        ans.push_back(low ++);
+      curr *= 10;
+      next *= 10;
+    }
+    return count;
+  }
+  vector<int> lexicalOrder(int n) {
+    int pos = 1, prefix = 1;
+    while(pos <= n) {
+      pos += bfs(prefix, n);
+      prefix ++;
+    }
+    return ans;
+  }
+*/
+  void dfs(int prefix, int n) {
+    if(prefix > n) return 0;
+    ans.push_back(prefix);
+    for(int i = 0; i <= 9; i ++) {
+      dfs(prefix * 10 + i, n);
+    }
+  }
+
+  vector<int> lexicalOrder(int n) {
+    for (int i = 1; i <= 9; ++i) dfs(i, n);
+      return ans;
+  }
+};

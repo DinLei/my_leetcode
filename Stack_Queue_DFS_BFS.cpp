@@ -179,7 +179,7 @@ public:
 
   void clean_deq(deque<int>& deq, vector<int>& nums, int i, int k) {
   // void clean_deq(list<int>& deq, vector<int>& nums, int i, int k) {
-    if( !deq.empty() && deq.front() == i-k )
+    if( !deq.empty() && deq.front() == i - k )
       deq.pop_front();
     
     while( !deq.empty() && nums[i] > nums[deq.back()] ) 
@@ -275,7 +275,7 @@ public:
     }
 };
 
-
+/*=============================================辅助栈、辅助队列=============================================*/
 /*155. 最小栈*/
 /*
 设计一个支持 push ，pop ，top 操作，并能在常数时间内检索到最小元素的栈。
@@ -296,6 +296,7 @@ public:
     
     void push(int x) {
         x_stack.push(x);
+        // 最小栈永远只插入当前最小的元素
         min_stack.push(min(min_stack.top(), x));
     }
     
@@ -312,6 +313,42 @@ public:
         return min_stack.top();
     }
 };
+
+
+/*剑指 Offer 59 - II. 队列的最大值*/
+class MaxQueue {
+public:
+    MaxQueue() {
+
+    }
+    
+    int max_value() {
+      if(!max_que.empty())
+        return max_que.front();
+      return -1;
+    }
+    
+    void push_back(int value) {
+      dat_que.push(value);
+      while(!max_que.empty() && max_que.back() < value)
+        max_que.pop_back();
+      max_que.push_back(value);
+    }
+    
+    int pop_front() {
+      if(dat_que.empty())
+        return -1;
+      int res = dat_que.front();
+      dat_que.pop();
+      if(res == max_que.front())
+        max_que.pop_front();
+      return res;
+    }
+private:
+  queue<int> dat_que;
+  deque<int> max_que;
+};
+/*=============================================辅助栈、辅助队列=============================================*/
 
 
 /*剑指 Offer 09. 用两个栈实现队列*/
