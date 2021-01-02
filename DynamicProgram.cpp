@@ -177,7 +177,7 @@ public:
             last = 0;
             for(int j = 1; j <= len2; j ++){
                 int tmp = dp[j];
-                if(str1[i - 1] == str2[j -1 ]){
+                if(str1[i - 1] == str2[j - 1]){
                     dp[j] = last + 1;
                 }
                 else dp[j] = 0;
@@ -188,7 +188,7 @@ public:
                 }
             }
         }
-        if(maxNum==0) return "-1";
+        if(maxNum == 0) return "-1";
         return str1.substr(start - maxNum, maxNum);
     }
 };
