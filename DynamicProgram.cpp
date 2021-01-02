@@ -174,7 +174,7 @@ public:
         int last = 0;
         int maxNum = INT_MIN;
         for(int i = 1; i <= len1; i ++){
-            last = 0;
+            last = 0; //  上一对字符匹配时候最长子串长度
             for(int j = 1; j <= len2; j ++){
                 int tmp = dp[j];
                 if(str1[i - 1] == str2[j - 1]){
