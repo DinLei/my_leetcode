@@ -627,6 +627,7 @@ public:
                 } else {
                     node = que.back();
                     que.pop_back();
+                    // 注意这里的顺序，先右后左
                     if(node->right) que.push_front(node->right);
                     if(node->left) que.push_front(node->left);
                 }

@@ -105,3 +105,38 @@ public:
         return len == INT_MAX ? "" : s.substr(head, len);
     }
 };
+
+
+/*牛课网：字符串变形*/
+/*
+对于一个给定的字符串，我们需要在线性(也就是O(n))的时间里对它做一些变形。首先这个字符串中包含着一些空格，就像"Hello World"一样，
+然后我们要做的是把着个字符串中由空格隔开的单词反序，同时反转每个字符的大小写。比如"Hello World"变形后就变成了"wORLD hELLO"。
+*/
+class Transform {
+public:
+  string trans(string s, int n) {
+    // write code here
+    if(n < 1) return s;
+    int p = n - 1;
+    string ans;
+    for(int i = n - 1; i >= 0; i --) {
+      if(s[i] == ' ') {
+        for(int j = i + 1; j <= p; j ++) ans += trans(s[j]);
+        ans += ' ';
+        p = i - 1;
+      }
+    }
+    for(int j = 0; j <= p; j ++) ans += trans(s[j]);
+    return ans;
+  }
+  
+  char trans(char ch) {
+    if('a' <= ch && ch <= 'z')
+      return ch - 'a' + 'A';
+    else
+      return ch - 'A' + 'a';
+  }
+};
+
+
+

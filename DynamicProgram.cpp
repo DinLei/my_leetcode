@@ -399,7 +399,7 @@ public:
 };
 
 
-/*85. 最大矩形*/
+/**85. 最大矩形*/
 /*给定一个仅包含 0 和 1 、大小为 rows x cols 的二维二进制矩阵，找出只包含 1 的最大矩形，并返回其面积。*/
 class Solution {
 public:
@@ -423,6 +423,38 @@ public:
       }
     }
     return ans;
+  }
+};
+
+
+/**221. 最大正方形*/
+/*
+在一个由 '0' 和 '1' 组成的二维矩阵内，找到只包含 '1' 的最大正方形，并返回其面积。
+*/
+class Solution {
+public:
+  int maximalSquare(vector<vector<char>>& matrix) {
+    // write code here
+    int nrow = matrix.size();
+    if(nrow == 0) return 0;
+    int ncol = matrix[0].size();
+    if(ncol == 0) return 0;
+    int maxSide = 0;
+    vector< vector<int> > dp(nrow, vector<int>(ncol, 0));
+
+    for(int i = 0; i < nrow; i ++) {
+      for(int j = 0; j < ncol; j ++) {
+        if(matrix[i][j] == '1') {
+          if(i == 0 || j == 0)
+            dp[i][j] = 1;
+          else {
+            dp[i][j] = min(dp[i - 1][j], min(dp[i - 1][j - 1], dp[i][j - 1])) + 1;
+          }
+          maxSide = max(maxSide, dp[i][j]);
+        }
+      }
+    }
+    return maxSide * maxSide;
   }
 };
 

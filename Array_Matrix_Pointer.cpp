@@ -215,7 +215,7 @@ public:
 };
 
 
-/*189. 旋转数组*/
+/**189. 旋转数组*/
 /*
 给定一个数组，将数组中的元素向右移动 k 个位置，其中 k 是非负数
 要求使用空间复杂度为 O(1) 的 原地 算法。
@@ -242,7 +242,12 @@ public:
 };
 
 // 方法二：使用反转
-// 这个方法基于这个事实：当我们旋转数组 k 次， k%n 个尾部元素会被移动到头部，剩下的元素会被向后移动。
+/* 这个方法基于这个事实：当我们旋转数组 k 次， k%n 个尾部元素会被移动到头部，剩下的元素会被向后移动。
+原始数组                  : 1 2 3 4 5 6 7
+反转所有数字后             : 7 6 5 4 3 2 1
+反转前 k 个数字后          : 5 6 7 4 3 2 1
+反转后 n-k 个数字后        : 5 6 7 1 2 3 4 --> 结果
+*/
 class Solution {
 public:
   void rotate(vector<int>& nums, int k) {
@@ -343,6 +348,34 @@ public:
       }
     }
     return ans;
+  }
+};
+
+
+/*78. 子集*/
+/*
+给定一组不含重复元素的整数数组 nums，返回该数组所有可能的子集（幂集）。
+说明：解集不能包含重复的子集。
+*/
+class Solution {
+private:
+  vector< vector<int> > ans;
+  vector<int> perm;
+public:
+  vector<vector<int>> subsets(vector<int>& nums) {
+    backtracking(nums, 0);
+    return ans;
+  }
+
+  void backtracking(vector<int>& nums, int idx) {
+    if(idx == nums.size()) {
+      ans.push_back(perm);
+      return;
+    }
+    perm.push_back(nums[idx]);
+    backtracking(nums, idx + 1);
+    perm.pop_back();
+    backtracking(nums, idx + 1);
   }
 };
 

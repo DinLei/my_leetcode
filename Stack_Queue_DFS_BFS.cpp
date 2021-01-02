@@ -96,11 +96,11 @@ public:
     // 边界相关的'O'先用其他字符填充代替
     for( int i = 0; i < nr; i ++ ) {
       dfs(board, i, 0);     // 每一行的最左边
-      dfs(board, i, nc-1);  // 每一行的最右边
+      dfs(board, i, nc - 1);  // 每一行的最右边
     }
     for( int j = 1; j < nc-1; j ++ ) {
       dfs(board, 0, j);     // 每一列的最上边
-      dfs(board, nr-1, j);  // 每一列的最下边
+      dfs(board, nr - 1, j);  // 每一列的最下边
     }
     for( int i = 0; i < nr; i ++ ) {
       for( int j = 0; j < nc; j ++ ) {
@@ -348,7 +348,7 @@ private:
   queue<int> dat_que;
   deque<int> max_que;
 };
-/*=============================================辅助栈、辅助队列=============================================*/
+/*========================================================================================================================*/
 
 
 /*剑指 Offer 09. 用两个栈实现队列*/
@@ -377,4 +377,66 @@ public:
   }
 private:
   stack<int> s1, s2;
+};
+
+
+/*经典的N皇后*/
+// 回溯算法
+class Solution {
+public:
+    vector<vector<string>> solveNQueens(int n) {
+        auto solutions = vector<vector<string>>();
+        auto queens = vector<int>(n, -1);
+        // 三个hash_set记录状态
+        auto columns = unordered_set<int>();
+        auto diagonals1 = unordered_set<int>();
+        auto diagonals2 = unordered_set<int>();
+        backtrack(solutions, queens, n, 0, columns, diagonals1, diagonals2);
+        return solutions;
+    }
+
+    void backtrack(vector<vector<string>> &solutions, vector<int> &queens, int n, int row, unordered_set<int> &columns, unordered_set<int> &diagonals1, unordered_set<int> &diagonals2) {
+        if (row == n) {
+            vector<string> board = generateBoard(queens, n);
+            solutions.push_back(board);
+        } else {
+            for (int i = 0; i < n; i++) {
+                if (columns.find(i) != columns.end()) {
+                    continue;
+                }
+                // 主对角线
+                int diagonal1 = row - i;
+                if (diagonals1.find(diagonal1) != diagonals1.end()) {
+                    continue;
+                }
+                // 副对角线
+                int diagonal2 = row + i;
+                if (diagonals2.find(diagonal2) != diagonals2.end()) {
+                    continue;
+                }
+                // 改变状态
+                queens[row] = i;
+                columns.insert(i);
+                diagonals1.insert(diagonal1);
+                diagonals2.insert(diagonal2);
+                // 回溯
+                backtrack(solutions, queens, n, row + 1, columns, diagonals1, diagonals2);
+                // 撤回状态
+                queens[row] = -1;
+                columns.erase(i);
+                diagonals1.erase(diagonal1);
+                diagonals2.erase(diagonal2);
+            }
+        }
+    }
+
+    vector<string> generateBoard(vector<int> &queens, int n) {
+        auto board = vector<string>();
+        for (int i = 0; i < n; i++) {
+            string row = string(n, '.');
+            row[queens[i]] = 'Q';
+            board.push_back(row);
+        }
+        return board;
+    }
 };

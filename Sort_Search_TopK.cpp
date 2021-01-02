@@ -516,6 +516,35 @@ public:
 
   vector<int> lexicalOrder(int n) {
     for (int i = 1; i <= 9; ++i) dfs(i, n);
-      return ans;
+    return ans;
   }
+};
+
+
+/****请实现有重复数字的有序数组的二分查找。*/
+/*
+输出在数组中第一个大于等于查找值的位置，如果数组中不存在这样的数，则输出数组长度加一。
+*/
+class Solution {
+public:
+    /**
+     * 二分查找
+     * @param n int整型 数组长度
+     * @param v int整型 查找值
+     * @param a int整型vector 有序数组
+     * @return int整型
+     */
+  int lower_bound_(int n, int v, vector<int>& a) {
+    // write code here
+    if (a.back() < v) return n + 1;
+    int l = 0, r = n, m = 0;
+    while (l < r) {
+        m = (l + r) >> 1;
+        if (a[m] >= v) r = m;
+        else l = m + 1;
+    }
+    return l + 1;
+  }
+
+  // 上面的语句 if (a[m] >= v) 改成 大于， 就是c++库里的 upper_bound 函数功能。
 };
