@@ -13,8 +13,8 @@ public:
         vector<vector<int>> dp(n, vector<int>(n));
         string ans;
         // 这里通过显示定义距离l进行遍历控制
-        for (int l = 0; l < n; ++l) {
-            for (int i = 0; i + l < n; ++i) {
+        for (int l = 0; l < n; ++ l) {
+            for (int i = 0; i + l < n; ++ i) {
                 int j = i + l;
                 if (l == 0) {
                     dp[i][j] = 1;
@@ -32,7 +32,39 @@ public:
     }
 };
 // 方向二：中心扩展
-/**/
+class Solution {
+public:
+  string longestPalindrome(string s) {
+    int n = s.size();
+    if(n <= 1) return s;
+    else if(n == 2) return s[0] == s[1] ? s : s.substr(0, 1);
+    int maxLen = -1, l, r;
+    for(int i = 0; i < n; i ++) {
+      int x = i - 1, y = i;
+      while(x >= 0 && y < n && s[x] == s[y]) {
+        x --; y ++;
+      }
+      ++ x; -- y;
+      if(y - x > maxLen) {
+        maxLen = y - x;
+        l = x; r = y;
+      }
+      x = i - 1, y = i + 1;
+      while(x >= 0 && y < n && s[x] == s[y]) {
+        x --; y ++;
+      }
+      ++ x; -- y;
+      if(y - x > maxLen) {
+        maxLen = y - x;
+        l = x; r = y;
+      }
+    }
+    // cout << l << ", " << r << endl;
+    return s.substr(l, maxLen + 1);
+  }
+};
+
+
 /*516. 最长回文子序列*/
 int longestPalindromeSubseq(string s) {
     int n = s.size();
@@ -120,6 +152,45 @@ public:
     }
     return dp[n1][n2];
   }
+};
+
+
+/**牛课网：最长公共子串*/
+class Solution {
+public:
+    /**
+     * longest common substring
+     * @param str1 string字符串 the string
+     * @param str2 string字符串 the string
+     * @return string字符串
+     */
+    string LCS(string str1, string str2) {
+        // write code here
+        int len1 = str1.size();
+        int len2 = str2.size();
+        if(!len1 || !len2) return "-1";
+        vector<int> dp(len2 + 1, 0);
+        int start = 0;
+        int last = 0;
+        int maxNum = INT_MIN;
+        for(int i = 1; i <= len1; i ++){
+            last = 0;
+            for(int j = 1; j <= len2; j ++){
+                int tmp = dp[j];
+                if(str1[i - 1] == str2[j -1 ]){
+                    dp[j] = last + 1;
+                }
+                else dp[j] = 0;
+                last = tmp;
+                if(maxNum < dp[j]){
+                    start = i;
+                    maxNum = dp[j];
+                }
+            }
+        }
+        if(maxNum==0) return "-1";
+        return str1.substr(start - maxNum, maxNum);
+    }
 };
 /***************************************************************************************/
 
@@ -236,7 +307,7 @@ public:
     vector<int> count(n, 1);
 
     for(int i = 1; i < n; i ++) {
-      for(int j = 0; j <i; j ++) {
+      for(int j = 0; j < i; j ++) {
         if(nums[j] < nums[i]) {
           // 第一次找到
           if(dp[j] + 1 > dp[i]) {
