@@ -187,6 +187,27 @@ public:
 };
 /*===========================================================================================*/
 
+/**牛课网：有序矩阵查找*/
+/*现在有一个行和列都排好序的矩阵，请设计一个高效算法，快速查找矩阵中是否含有值x。*/
+class Finder {
+public:
+    bool findX(vector<vector<int> > mat, int n, int m, int x) {
+        // write code here
+        // int curr_val = mat[0][m-1];
+        int i = 0, j = m - 1;
+        while(i < n && j >= 0){
+            if(x > mat[i][j]){
+                ++ i;
+            }else if(x < mat[i][j]){
+                -- j;
+            }
+            else{
+                return true;
+            }
+        }
+        return false;
+    }
+};
 
 /*33. 搜索旋转排序数组*/
 // 二分查找，注意区间特性

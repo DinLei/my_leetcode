@@ -161,7 +161,7 @@ public:
 /*===============================================================================*/
 
 // 分治
-/*4. 寻找两个正序数组的中位数*/
+/***4. 寻找两个正序数组的中位数*/
 class Solution {
 public:
   double findMedianSortedArrays(vector<int>& nums1, vector<int>& nums2) {
@@ -201,7 +201,7 @@ public:
 /*找两个有序数组的第K小元素*/
 class Solution {
 public:
-    int findKthElm(vector<int>& nums1,vector<int>& nums2,int k){
+    int findKthElm(vector<int>& nums1, vector<int>& nums2, int k){
         assert(1 <= k && k <= nums1.size() + nums2.size());
         int le = max(0, int(k - nums2.size())), ri = min(k, int(nums1.size()));
         while(le < ri){ 
