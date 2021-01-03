@@ -139,4 +139,147 @@ public:
 };
 
 
+/*牛课网：请写一个整数计算器，支持加减乘三种运算和括号。（中缀表达式计算）*/
+/*
+算法
+1.用栈保存各部分计算的和
+2.遍历表达式
+3.遇到数字时继续遍历求这个完整的数字的值
+4.遇到左括号时递归求这个括号里面的表达式的值
+5.遇到运算符时或者到表达式末尾时，就去计算上一个运算符并把计算结果push进栈，然后保存新的运算符
+  如果是+，不要计算，push进去
+  如果是-，push进去负的当前数
+  如果是×、÷，pop出一个运算数和当前数作计算
+6.最后把栈中的结果求和即可
+*/
+class Solution {
+public:
+    /**
+     * 代码中的类名、方法名、参数名已经指定，请勿修改，直接返回方法规定的值即可
+     * 返回表达式的值
+     * @param s string字符串 待计算的表达式
+     * @return int整型
+     */
+  int solve(string s) {
+    // write code here
+    stack<int> stk;
+    int sum = 0, number = 0, n = s.size();
+    char sign = '+';
+    for(int i = 0; i < n; i ++) {
+      char c = s[i];
+      if(c == '(') {
+        int j = i + 1;
+        int countPar = 1;
+        while(countPar > 0) {
+          if(s[j] == '(') countPar ++;
+          if(s[j] == ')') countPar --;
+          j ++;
+        }
+        number = solve(s.substr(i + 1, j - i - 1));
+        i = j - 1;
+      }
+      if(isdigit(c)) {
+        number = number * 10 + c - '0';
+      }
+      if(!isdigit(c) || i == n - 1) {
+        if(sign == '+') stk.push(number);
+        else if(sign == '-') stk.push(-1 * number);
+        else if(sign == '*') {
+          int a = stk.top(); stk.pop();
+          stk.push(a * number);
+        } else if(sign == '/') {
+          int a = stk.top(); stk.pop();
+          stk.push(a / number);
+        }
+        number = 0; sign = c;
+      }
+    }
+    while(!stk.empty()) {
+      sum += stk.top(); stk.pop();
+    }
+    return sum;
+  }
+};
 
+
+/*数据结构基础知识：前缀表达式 转换 后缀表达式*/
+#include <iostream>
+#include <stack>
+using namespace std;
+
+/*
+ 根据中缀表达式 构造后缀表达式
+*/
+
+int isp(const char opt) {
+  switch (opt) {
+  case '#':
+    return 0;
+  case '(':
+    return 1;
+  case '+':
+  case '-':
+    return 3;
+  case '*':
+  case '/':
+  case '%':
+    return 5;
+  case ')':
+    return 6;
+  default:
+    return -1;
+  }
+}
+
+void postfix_exp(string& infix, string& postfix) {
+  stack<char> stk;
+  int ind = 0, len = infix.length();
+  if (len <= ind)
+    return ;
+  char* tokens;
+  while (ind < len) {
+    char ch = infix.at(ind++);
+    if (ch == ' ')
+      continue;
+    else if (isdigit(ch) || ch == '.' || (ch == '-' && ind == 0)) {
+      postfix += ch;
+    } else {
+      if (ch == ')') {
+        while (stk.top() != '(') {
+          postfix += ' ';
+          postfix += stk.top();
+          stk.pop();
+        }
+        stk.pop();
+      } else {
+        while ( !stk.empty() && ch != '(' && isp(stk.top()) >= isp(ch)) {
+          postfix += ' ';
+          postfix += stk.top();
+          stk.pop();
+        }
+        if (ch != '(')
+          postfix += ' ';
+        stk.push(ch);
+      }
+    }
+  }
+
+  while (! stk.empty()) {
+    postfix += ' ';
+    postfix += stk.top();
+    stk.pop();
+  }
+}
+
+
+int main () {
+  
+  string infix1 = "1.2 + 2 * 3 * (4 + 5 * 6) * 7";
+  cout << "中缀表达式: " << infix1 << endl;
+
+  string postfix1;
+  postfix_exp(infix1, postfix1);
+
+  cout << "后缀表达式: " << postfix1 << endl;
+  return 0;
+}
