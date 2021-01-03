@@ -283,17 +283,11 @@ public:
     for(int i = 0; i < nums.size() - 2; i ++) {
       // 剪枝
       if(nums[i] > 0) return res;
-      // 开始的时候，若是连着的两个相同，取后面的
-      if(i > 0 && nums[i] == nums[i - 1])
-        continue;
+      // 开始的时候，若是连着的两个相同，取前面的（同样的起点不用两次）
+      if(i > 0 && nums[i] == nums[i - 1]) continue;
       int t = -1 * nums[i];
       int l = i + 1, r = nums.size() - 1;
       while(l < r) {
-        // 寻找的时候，若是连着的两个相同，跳过
-        if(l > i + 1 && nums[l] == nums[l - 1]) {
-          l ++;
-          continue;
-        }  
         if(nums[l] + nums[r] > t)
           r --;
         else if(nums[l] + nums[r] < t)

@@ -13,7 +13,7 @@ public:
   int lengthOfLongestSubstring(string s) {
     int ans = 0, start = 0, i = 0;
     unordered_map<char, int> idx;
-    for(i = 0; i < s.size(); i ++) {
+    for( ; i < s.size(); i ++) {
       if(idx.find(s[i]) != idx.end()) {
         ans = max(ans, i - start);
         start = max(start, idx[s[i]] + 1);
