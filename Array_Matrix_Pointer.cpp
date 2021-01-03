@@ -187,6 +187,8 @@ public:
 };
 /*===========================================================================================*/
 
+
+/*=============================================二分查找==================================================*/
 /**牛课网：有序矩阵查找*/
 /*现在有一个行和列都排好序的矩阵，请设计一个高效算法，快速查找矩阵中是否含有值x。*/
 class Finder {
@@ -299,10 +301,11 @@ public:
       return res;
     // 排序是遍历构造组合时的技巧
     sort(nums.begin(), nums.end());
+    // 减 2，注意
     for(int i = 0; i < nums.size() - 2; i ++) {
-      // 剪枝
-      if(nums[i] > 0) return res;
-      // 开始的时候，若是连着的两个相同，取前面的（同样的起点不用两次）
+      // 剪枝，可以没有
+      if(nums[i] > 0) return res; 
+      // 开始的时候，若是连着的两个相同，取前面的（同样的起点不用两次） ！！！
       if(i > 0 && nums[i] == nums[i - 1]) continue;
       int t = -1 * nums[i];
       int l = i + 1, r = nums.size() - 1;
@@ -399,18 +402,18 @@ class Solution {
 public:
   vector<vector<int>> permute(vector<int>& nums) {
     vector<vector<int>> res;
-    backtrace(res, nums, 0, (int)nums.size());
+    backTracking(res, nums, 0, (int)nums.size());
     return res;
   }
 
-  void backtrace(vector<vector<int>>& res, vector<int>& nums, int first, int len) {
+  void backTracking(vector<vector<int>>& res, vector<int>& nums, int first, int len) {
     if(first == len) {
       res.push_back(nums);
       return ;
     }
     for(int i = first; i < len; i ++) {
       swap(nums[first], nums[i]);
-      backtrace(res, nums, first + 1, len);
+      backTracking(res, nums, first + 1, len);
       swap(nums[first], nums[i]);
     }
   }
