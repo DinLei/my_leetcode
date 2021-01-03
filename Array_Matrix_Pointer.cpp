@@ -426,6 +426,7 @@ class Solution {
 private:
 vector<vector<int>> res;
 vector<int> perm;
+// 必须记住这个技巧和下面的去重复操作
 vector<int> visit;
 
 public:
