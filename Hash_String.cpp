@@ -59,7 +59,7 @@ public:
       // 技巧：如果有比自己小一点的，那自己不查，让小的去查
       if(set.count(x - 1)) continue;
       int tmp = 1, v = x;
-      while(set.count(++ v)) tmp ++;
+      while(set.count(++ v)) ++ tmp;
       ans = max(ans, tmp);
     }
     return ans;
