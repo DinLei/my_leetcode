@@ -89,6 +89,7 @@ public:
 在选修某些课程之前需要一些先修课程。 例如，想要学习课程 0 ，你需要先完成课程 1 ，我们用一个匹配来表示他们：[0,1]
 给定课程总量以及它们的先决条件，请你判断是否可能完成所有课程的学习？
 */
+// 方法一：邻接表bfs
 class Solution {
 public:
   bool canFinish(int numCourses, vector<vector<int>>& prerequisites) {
@@ -116,12 +117,51 @@ public:
     return count == numCourses;
   }
 };
+// 方法二：邻接表dfs
+class Solution {
+private:
+    vector<vector<int>> edges;
+    vector<int> visited;
+    bool valid = true;
+
+public:
+    void dfs(int u) {
+        visited[u] = 1;
+        for (int v: edges[u]) {
+            if (visited[v] == 0) {
+                dfs(v);
+                if (!valid) {
+                    return;
+                }
+            }
+            else if (visited[v] == 1) {
+                valid = false;
+                return;
+            }
+        }
+        visited[u] = 2;
+    }
+
+    bool canFinish(int numCourses, vector<vector<int>>& prerequisites) {
+        edges.resize(numCourses);
+        visited.resize(numCourses);
+        for (const auto& info: prerequisites) {
+            edges[info[1]].push_back(info[0]);
+        }
+        for (int i = 0; i < numCourses && valid; ++i) {
+            if (!visited[i]) {
+                dfs(i);
+            }
+        }
+        return valid;
+    }
+};
+
 
 /*990. 等式方程的可满足性*/
 class Solution {
 public:
   vector<int> parent;
-  vector<int> rank;
 
   // 找父节点
   int findSet( int x ) {
@@ -142,7 +182,6 @@ public:
     int eSize = equations.size(); 
 
     parent.resize( 26, -1 );
-    rank.resize( 26, 0 );
 
     for( int i = 0; i < eSize; i ++ ) {
       if( equations[i][1] == '=' ) {
