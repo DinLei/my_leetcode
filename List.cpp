@@ -100,6 +100,34 @@ public:
 };
 
 
+/*206. 反转链表*/
+class Solution {
+public:
+  // 迭代
+  ListNode* reverseList2(ListNode* head) {
+    // 注意初始化一定要为null
+    ListNode* prev = nullptr, *curr = head;
+    while(curr) {
+      ListNode* tmp = curr->next;
+      curr->next = prev;
+      prev = curr;
+      curr = tmp;
+    }
+    return prev;
+  }
+  // 递归
+  ListNode* reverseList(ListNode* head) {
+    if(head == nullptr || head->next == nullptr)
+      return head;
+    ListNode* curr = reverseList(head->next);
+    // 技巧
+    head->next->next = head;
+    head->next = nullptr;
+    return curr;
+  }
+};
+
+
 /*61. 旋转链表*/
 /*
 level: 中等
@@ -303,32 +331,6 @@ public:
     }
 };
 
-/*206. 反转链表*/
-class Solution {
-public:
-  // 迭代
-  ListNode* reverseList2(ListNode* head) {
-    // 注意初始化一定要为null
-    ListNode* prev = nullptr, *curr = head;
-    while(curr) {
-      ListNode* tmp = curr->next;
-      curr->next = prev;
-      prev = curr;
-      curr = tmp;
-    }
-    return prev;
-  }
-  // 递归
-  ListNode* reverseList(ListNode* head) {
-    if(head == nullptr || head->next == nullptr)
-      return head;
-    ListNode* curr = reverseList(head->next);
-    // 技巧
-    head->next->next = head;
-    head->next = nullptr;
-    return curr;
-  }
-};
 
 /*83. 删除排序链表中的重复元素*/
 /*给定一个排序链表，删除所有重复的元素，使得每个元素只出现一次。*/
