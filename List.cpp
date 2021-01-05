@@ -347,7 +347,7 @@ public:
   }
 };
 
-/*25. K 个一组翻转链表*/
+/**25. K 个一组翻转链表*/
 class Solution {
 public:
   ListNode* reverseKGroup(ListNode* head, int k) {
