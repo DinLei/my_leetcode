@@ -250,7 +250,7 @@ public:
         vector<int> left(n), right(n);
         // 单调栈记录的是小于当前高度的最大值的索引
         stack<int> mono_stack;
-        for (int i = 0; i < n; ++i) {
+        for (int i = 0; i < n; ++ i) {
             while (!mono_stack.empty() && heights[mono_stack.top()] >= heights[i]) {
                 mono_stack.pop();
             }
@@ -259,7 +259,7 @@ public:
         }
 
         mono_stack = stack<int>();
-        for (int i = n - 1; i >= 0; --i) {
+        for (int i = n - 1; i >= 0; -- i) {
             while (!mono_stack.empty() && heights[mono_stack.top()] >= heights[i]) {
                 mono_stack.pop();
             }
@@ -268,7 +268,7 @@ public:
         }
         
         int ans = 0;
-        for (int i = 0; i < n; ++i) {
+        for (int i = 0; i < n; ++ i) {
             ans = max(ans, (right[i] - left[i] - 1) * heights[i]);
         }
         return ans;
