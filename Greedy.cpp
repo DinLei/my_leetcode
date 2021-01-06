@@ -34,6 +34,52 @@ public:
   }
 };
 
+
+/*牛课网：获得更多的奖金*/
+/*
+小明在越南旅游，参加了当地的娱乐活动。小明运气很好，拿到了大奖， 到了最后的拿奖金环节。小明发现桌子上放着一列红包，每个红包上写着奖金数额。
+现在主持人给要求小明在这一列红包之间“切”2刀，将这一列红包“切”成3组，并且第一组的奖金之和等于最后一组奖金和（允许任意一组的红包集合是空）。最终第一组红包的奖金之和就是小明能拿到的总奖金。小明想知道最多能拿到的奖金是多少，你能帮他算算吗。
+*/
+#include <iostream>
+#include <vector>
+#include <string>
+#include <limits.h>
+
+using namespace std;
+
+typedef long long LL;
+
+LL split(int n, vector<int> nums) {
+  if(n <= 1) return 0;
+  int i = 0, j = n - 1;
+  LL left = nums[i], right = nums[j], ans = 0;
+  while(i < j) {
+    if(left == right) {
+      ans = max(ans, left);
+      left += nums[++ i];
+      right += nums[-- j];
+    }
+    else if(left < right)
+      left += nums[++ i];
+    else
+      right += nums[-- j];
+  }
+  return ans;
+}
+
+int main() {
+  int n, x;
+  cin >> n;
+  vector<int> nums;
+  while(cin >> x) {
+    nums.push_back(x);
+  }
+  LL ans = split(n, nums);
+  cout << ans;
+  return 0;
+}
+
+
 /*122. 买卖股票的最佳时机 II*/
 /*
 给定一个数组，它的第 i 个元素是一支给定股票第 i 天的价格。
@@ -145,4 +191,50 @@ int main() {
     for(i = 0; i <= k; i++)   
         scanf("%d", &d[i]);   
     greedy(d, n, k);   
-}  
+} 
+
+
+/*55. 跳跃游戏*/
+/*
+给定一个非负整数数组，你最初位于数组的第一个位置。
+数组中的每个元素代表你在该位置可以跳跃的最大长度。
+判断你是否能够到达最后一个位置。
+*/
+class Solution {
+public:
+  bool canJump(vector<int>& nums) {
+    int rightMost = 0, n = nums.size();
+    for(int i = 0; i < n; i ++) {
+      if(i <= rightMost) {
+        rightMost = max(rightMost, i + nums[i]);
+        if(rightMost >= n - 1) return true;
+      } // else break;
+    }
+    return false;
+  }
+};
+
+
+/*45. 跳跃游戏 II*/
+/*
+给定一个非负整数数组，你最初位于数组的第一个位置。
+数组中的每个元素代表你在该位置可以跳跃的最大长度。
+你的目标是使用最少的跳跃次数到达数组的最后一个位置。
+*/ 
+class Solution {
+public:
+  int jump(vector<int>& nums) {
+    int maxPos = 0, n = nums.size(), end = 0, step = 0;
+    for (int i = 0; i < n - 1; ++i) {
+      if (maxPos >= i) {
+        maxPos = max(maxPos, i + nums[i]);
+        // 这里其实是代表至少到达第一个边界肯定没到达第二个边界
+        if (i == end) {
+          end = maxPos;
+          ++ step;
+        }
+      }
+    }
+    return step;
+  }
+};

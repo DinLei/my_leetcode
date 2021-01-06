@@ -33,11 +33,11 @@ public:
     grid[i][j] = '0';
     if(i > 0)
       dfs(grid, i-1, j, nrow, ncol);
-    if(i < nrow-1)
+    if(i < nrow - 1)
       dfs(grid, i+1, j, nrow, ncol);
     if(j > 0)
       dfs(grid, i, j-1, nrow, ncol);
-    if(j < ncol-1)
+    if(j < ncol - 1)
       dfs(grid, i, j+1, nrow, ncol);
   }
 };
