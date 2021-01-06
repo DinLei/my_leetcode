@@ -360,7 +360,7 @@ public:
 	int findKthLargest(vector<int>& nums, int k) {
         int idx = searchPeakIndex(nums);
         int i = idx - 1, j = idx + 1, c = 1;
-        vector<int> ans(k + 2); ans.push_back(nums[idx]);
+        vector<int> ans; ans.push_back(nums[idx]);
         while(i >= 0 && j <= nums.size() && c <= k) {
         	if(nums[i] > nums[j]) {
         		ans.push_back(nums[i]);
