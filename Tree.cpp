@@ -110,9 +110,48 @@ public:
 /*99. 恢复二叉搜索树*/
 /*
 给你二叉搜索树的根节点 root ，该树中的两个节点被错误地交换。请在不改变其结构的情况下，恢复这棵树。
-
 进阶：使用 O(n) 空间复杂度的解法很容易实现。你能想出一个只使用常数空间的解决方案吗？
 */
+
+// 方法一：显式中序遍历
+/*
+我们来看下如果在一个递增的序列中交换两个值会造成什么影响。假设有一个递增序列 a=[1,2,3,4,5,6,7]。
+如果我们交换两个不相邻的数字，例如 2 和 6，原序列变成了 a=[1,6,3,4,5,2,7]，那么显然序列中有两个位置不满足 a_i<a_{i+1},
+​在这个序列中体现为 6>3，5>2，因此只要我们找到这两个位置，即可找到被错误交换的两个节点。如果我们交换两个相邻的数字，例如 2 和 3，
+此时交换后的序列只有一个位置不满足 a_i<a_{i+1}。因此整个值序列中不满足条件的位置或者有两个，或者有一个。
+
+至此，解题方法已经呼之欲出了：
+  1. 找到二叉搜索树中序遍历得到值序列的不满足条件的位置。
+  2. 如果有两个，我们记为 i 和 j（i<j 且 a_i>a_{i+1} && a_j>a_{j+1})，那么对应被错误交换的节点即为 a_i 对应的节点和 a_{j+1}对应的节点，
+     我们分别记为 x 和 y。如果有一个，我们记为 i，那么对应被错误交换的节点即为 a_i 对应的节点和 a_{i+1} 对应的节点，我们分别记为 x 和 y。
+  3. 交换 x 和 y 两个节点即可。
+*/
+class Solution {
+private:
+vector<TreeNode*> ins;
+public:
+  void recoverTree(TreeNode* root) {
+    inorder(root);
+    int p1 = -1, p2 = -1;
+    for(int i = 1; i < ins.size(); i ++) {
+      if(ins[i]->val < ins[i - 1]->val) {
+        if(p1 < 0) p1 = i - 1;
+        else p2 = i;
+      }
+    }
+    if(p1 >= 0 && p2 < 0) swap(ins[p1]->val, ins[p1 + 1]->val);
+    else if(p1 >= 0 && p2 >= 0) swap(ins[p1]->val, ins[p2]->val);
+  }
+
+  void inorder(TreeNode* root) {
+    if(root != nullptr) {
+      inorder(root->left);
+      ins.emplace_back(root);
+      inorder(root->right);
+    }
+  }
+};
+// 使用stack进行中序遍历，在遍历的时候就记录错误值
 class Solution {
 public:
   void recoverTree(TreeNode* root) {
@@ -138,7 +177,6 @@ public:
 
 /*
 105. 从前序与中序遍历序列构造二叉树
-106. 从中序与后序遍历序列构造二叉树
 */
 
 /*
@@ -150,7 +188,10 @@ private:
     unordered_map<int, int> index;
 
 public:
-    TreeNode* myBuildTree(const vector<int>& preorder, const vector<int>& inorder, int preorder_left, int preorder_right, int inorder_left, int inorder_right) {
+    TreeNode* myBuildTree(
+      const vector<int>& preorder, const vector<int>& inorder, 
+      int preorder_left, int preorder_right, int inorder_left, int inorder_right) {
+
         if (preorder_left > preorder_right) {
             return nullptr;
         }
@@ -215,6 +256,32 @@ public:
     }
 };
 
+
+/*106. 从中序与后序遍历序列构造二叉树*/
+class Solution {
+private:
+unordered_map<int, int> index;
+public:
+  TreeNode* buildTree(vector<int>& inorder, vector<int>& postorder) {
+    for(int i = 0; i < inorder.size(); i ++)
+      index[inorder[i]] = i;
+    return BuildTree(inorder, 0, inorder.size() - 1, postorder, 0, postorder.size() - 1);
+  }
+
+  TreeNode* BuildTree(
+    vector<int>& inorder, int inL, int inR,
+    vector<int>& postorder, int poL, int poR) {
+    // printf("inL=%d, inR=%d, poL=%d, poR=%d \n", inL, inR, poL, poR);
+    if(inL > inR || poL > poR) return nullptr;
+    TreeNode* root = new TreeNode(postorder[poR]);
+    int c = index[postorder[poR]] - inL;
+    root->left = BuildTree(inorder, inL, inL + c - 1, postorder, poL, poL + c - 1);
+    root->right = BuildTree(inorder, inL + c + 1, inR, postorder, poL + c, poR - 1);
+    return root;
+  }
+};
+
+
 /*110. 平衡二叉树*/
 /*
 给定一个二叉树，判断它是否是高度平衡的二叉树。
@@ -253,7 +320,7 @@ public:
       return false;
     if( root->left == NULL && root->right == NULL )
       return sum == root->val;
-    return hasPathSum(root->left, sum-root->val) || hasPathSum(root->right, sum-root->val);
+    return hasPathSum(root->left, sum - root->val) || hasPathSum(root->right, sum - root->val);
   }
 };
 
@@ -640,6 +707,32 @@ public:
         return ans;
     }
 };
+
+
+/*199. 二叉树的右视图*/
+class Solution {
+public:
+  vector<int> rightSideView(TreeNode* root) {
+    vector<int> ans;
+    queue<TreeNode*> que;
+    que.push(root);
+    while(root != NULL && !que.empty()) {
+      int num = que.size();
+      TreeNode* node;
+      while(num -- > 0) {
+        node = que.front();
+        que.pop();
+        if(node->left)
+          que.push(node->left);
+        if(node->right)
+          que.push(node->right);
+      }
+      ans.push_back(node->val);
+    }
+    return ans;
+  }
+};
+
 
 /*958. 二叉树的完全性检验*/
 /*
