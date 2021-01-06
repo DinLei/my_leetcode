@@ -128,6 +128,42 @@ public:
 };
 
 
+/**25. K 个一组翻转链表*/
+class Solution {
+public:
+  ListNode* reverseKGroup(ListNode* head, int k) {
+    ListNode* dummy = new ListNode();
+    dummy->next = head;
+    ListNode* prev = dummy, * end = dummy;
+
+    while( end->next != NULL ) {
+      for(int i = 0; i < k && end != NULL; i ++) 
+        end = end->next;
+      if(end == NULL) break;
+      ListNode* start = prev->next, * next = end->next;
+      end->next = NULL;   // 方便翻转子链表
+      prev->next = reverseList(start);    
+      start->next = next;
+
+      prev = start; end = start;    // 更新到下一段的前驱位置
+    }
+    return dummy->next;
+  }
+
+  ListNode* reverseList(ListNode* head) {
+    ListNode* prev = NULL;
+    ListNode* curr = head;
+    while(curr != NULL) {
+      ListNode* next = curr->next;
+      curr->next = prev;
+      prev = curr;
+      curr = next;
+    }
+    return prev;
+  }
+};
+
+
 /*61. 旋转链表*/
 /*
 level: 中等
@@ -140,15 +176,19 @@ public:
       return head;
     ListNode* old_tail = head;
     int n = 1;
+    // 找到当前list的最后一个节点
     for( ; old_tail->next != nullptr; n ++) {
       old_tail = old_tail->next;
     }
     old_tail->next = head;
 
+    // 找到要切断的节点位置
     ListNode* new_tail = head;
     for(int i = 0; i < n - k % n - 1; i ++) {
       new_tail = new_tail->next;
     }
+
+    // 新的头部节点
     ListNode* new_head = new_tail->next;
     new_tail->next = nullptr;
 
@@ -346,41 +386,6 @@ public:
       }
     }
     return head;
-  }
-};
-
-/**25. K 个一组翻转链表*/
-class Solution {
-public:
-  ListNode* reverseKGroup(ListNode* head, int k) {
-    ListNode* dummy = new ListNode();
-    dummy->next = head;
-    ListNode* prev = dummy, * end = dummy;
-
-    while( end->next != NULL ) {
-      for(int i = 0; i < k && end != NULL; i ++) 
-        end = end->next;
-      if(end == NULL) break;
-      ListNode* start = prev->next, * next = end->next;
-      end->next = NULL;   // 方便翻转子链表
-      prev->next = reverseList(start);    
-      start->next = next;
-
-      prev = start; end = start;    // 更新到下一段的前驱位置
-    }
-    return dummy->next;
-  }
-
-  ListNode* reverseList(ListNode* head) {
-    ListNode* prev = NULL;
-    ListNode* curr = head;
-    while(curr != NULL) {
-      ListNode* next = curr->next;
-      curr->next = prev;
-      prev = curr;
-      curr = next;
-    }
-    return prev;
   }
 };
 
