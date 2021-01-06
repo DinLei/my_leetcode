@@ -445,7 +445,7 @@ public:
     long count = 0;
     // 数值字典树的层节点统计方法
     while( curr <= n ) {
-      count += min(n+1, next) - curr;
+      count += min(n + 1, next) - curr;
       // printf("curr=%d, next=%d, a_count=%d, t_count=%d\n", curr, next, min(n+1, next) - curr, count);
       curr *= 10;
       next *= 10;
@@ -507,7 +507,7 @@ public:
   }
 */
   void dfs(int prefix, int n) {
-    if(prefix > n) return 0;
+    if(prefix > n) return ;
     ans.push_back(prefix);
     for(int i = 0; i <= 9; i ++) {
       dfs(prefix * 10 + i, n);
