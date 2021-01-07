@@ -268,14 +268,13 @@ public:
     }
 };
 
-
 //牛课网：'最长上升子序列' 实战变种：搭积木
 /*小明有一袋子长方形的积木，如果一个积木A的长和宽都不大于另外一个积木B的长和宽，则积木A可以搭在积木B的上面。
 好奇的小明特别想知道这一袋子积木最多可以搭多少层，你能帮他想想办法吗？*/
 #include <utility>    // pair 头文件
 #include <vector>
 #include <iostream>
-#include <algorithm>  // min_element 和 max_element
+//#include <algorithm>  // min_element 和 max_element
 
 using namespace std;
 
@@ -298,17 +297,17 @@ int stacked_wood(int n, vector< pair<int, int> >& blocks) {
     if(blocks[i].second >= dp[len]) {
       dp[++ len] = blocks[i].second;
     } else {
-      int l = 1, r = len, pos = 0;
-      while(l <= r) {
+      // 这里需要参考 Sort_Search_TopK.cpp: "请实现有重复数字的有序数组的二分查找"
+      int l = 1, r = len;
+      while(l < r) {
         int m = (l + r) >> 1;
-        if(dp[m] < blocks[i].second) {
-          pos = m;
-          l = m + 1;
+        if(dp[m] >= blocks[i].second) {
+          r = m;
         } else {
-          r = m - 1;
+          l = m + 1;
         }
       }
-      dp[pos + 1] = blocks[i].second;
+      dp[l] = blocks[i].second;
     }
   }
   return len;

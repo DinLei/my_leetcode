@@ -534,6 +534,9 @@ public:
      * @param a int整型vector 有序数组
      * @return int整型
      */
+  // 这里其实是c++里面的lower_bound
+  // lower_bound(起始地址，结束地址，要查找的数值) 返回的是数值 第一个 出现的位置。
+  // upper_bound(起始地址，结束地址，要查找的数值) 返回的是 第一个大于待查找数值 出现的位置。
   int upper_bound_(int n, int v, vector<int>& a) {
     // write code here
     if (a.back() < v) return n + 1;
@@ -543,6 +546,7 @@ public:
         if (a[m] >= v) r = m;
         else l = m + 1;
     }
+    // l对应的位置值一定是小于待查找值的，再 +1 即是答案
     return l + 1;
   }
 };
