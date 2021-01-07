@@ -268,6 +268,65 @@ public:
     }
 };
 
+
+//牛课网：'最长上升子序列' 实战变种：搭积木
+/*小明有一袋子长方形的积木，如果一个积木A的长和宽都不大于另外一个积木B的长和宽，则积木A可以搭在积木B的上面。
+好奇的小明特别想知道这一袋子积木最多可以搭多少层，你能帮他想想办法吗？*/
+#include <utility>    // pair 头文件
+#include <vector>
+#include <iostream>
+#include <algorithm>  // min_element 和 max_element
+
+using namespace std;
+
+static bool compare(const pair<int, int> p1, const pair<int, int> p2) {
+  if(p1.first == p2.first){
+    return p1.second < p2.second;
+  }
+  return p1.first < p2.first;
+}
+
+int stacked_wood(int n, vector< pair<int, int> >& blocks) {
+  if(n <= 0) return 0;
+  vector<int> dp(n + 1, 0);
+  sort(blocks.begin(), blocks.end(), compare);
+  
+  int len = 1;
+  dp[len] = blocks[0].second;
+  
+  for(int i = 1; i < n; i ++) {
+    if(blocks[i].second >= dp[len]) {
+      dp[++ len] = blocks[i].second;
+    } else {
+      int l = 1, r = len, pos = 0;
+      while(l <= r) {
+        int m = (l + r) >> 1;
+        if(dp[m] < blocks[i].second) {
+          pos = m;
+          l = m + 1;
+        } else {
+          r = m - 1;
+        }
+      }
+      dp[pos + 1] = blocks[i].second;
+    }
+  }
+  return len;
+}
+
+int main() {
+  vector< pair<int, int> > blocks;
+  int n;
+  cin >> n;
+  for(int i = 0; i < n; i++) {
+    int f1, s1;
+    cin >> f1 >> s1;
+    blocks.push_back({f1, s1});
+  }
+  cout << stacked_wood(n, blocks);
+};
+
+
 /*674. 最长连续递增序列*/
 /*给定一个未经排序的整数数组，找到最长且 连续递增的子序列，并返回该序列的长度。*/
 class Solution {
@@ -1100,7 +1159,7 @@ public:
 class Solution {
 public:
   int videoStitching(vector<vector<int>>& clips, int T) {
-    vector<int> dp(T + 1, INT_MAX - 1);
+    vector<int> dp(T + 1,   - 1);
     dp[0] = 0;
     for(int i = 1; i <= T; i ++) {
       for(auto& x: clips) {

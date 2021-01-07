@@ -534,7 +534,7 @@ public:
      * @param a int整型vector 有序数组
      * @return int整型
      */
-  int lower_bound_(int n, int v, vector<int>& a) {
+  int upper_bound_(int n, int v, vector<int>& a) {
     // write code here
     if (a.back() < v) return n + 1;
     int l = 0, r = n, m = 0;
@@ -545,6 +545,4 @@ public:
     }
     return l + 1;
   }
-
-  // 上面的语句 if (a[m] >= v) 改成 大于， 就是c++库里的 upper_bound 函数功能。
 };
