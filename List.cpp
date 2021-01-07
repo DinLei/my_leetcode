@@ -517,6 +517,7 @@ public:
   ListNode* sortList(ListNode* node) {
     if(!node || !node->next)
       return node;
+    // 不想用split，可以初始化 fast = node->next;
     ListNode* slow = node, * fast = node, * split;
     while(fast && fast->next) {
       split = slow;
