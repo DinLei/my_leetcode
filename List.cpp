@@ -1,38 +1,50 @@
-/*23. 合并K个升序链表*/
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
+
+
+/**23. 合并K个升序链表*/
 /*
 给你一个链表数组，每个链表都已经按升序排列。
-
 请你将所有链表合并到一个升序链表中，返回合并后的链表。
 */
+// 用优先队列，小顶堆
+// 总的时间代价即渐进时间复杂度为 O(kn * log k)
+// 优先队列中的元素不超过 k 个，故渐进空间复杂度为 O(k)
 class Solution {
 public:
-  struct NodeCompare {
-    bool operator()(ListNode* l, ListNode* r) {
-      return l->val > r->val;
+  struct Status {
+    int val;
+    ListNode* ptr;
+    Status(int val, ListNode* ptr): val(val), ptr(ptr) {}
+    bool operator < (const Status& rhs) const {
+      return val > rhs.val;
     }
   };
 
-  ListNode* mergeKLists(vector<ListNode*>& lists) {
-    ListNode* dummy = new ListNode();
-    priority_queue<ListNode*, vector<ListNode*>, NodeCompare> pq;
-    for(int i = 0; i < lists.size(); i++) {
-      ListNode* tmp = lists[i];
-      while(tmp != nullptr) {
-        pq.push(tmp);
-        tmp = tmp->next;
-      }
-    }
+  priority_queue<Status> q;
 
-    ListNode* tmp = dummy;
-    while(!pq.empty()) {
-      tmp->next = pq.top();
-      pq.pop();
-      tmp = tmp->next;
+  ListNode* mergeKLists(vector<ListNode*>& lists) {
+    for(auto node: lists) {
+      if(node) q.push({node->val, node});
     }
-    tmp->next = nullptr;
-    return dummy->next;
+    ListNode dummy, * tail = &dummy;
+    while(!q.empty()) {
+      Status s = q.top(); q.pop();
+      tail->next = s.ptr; tail = tail->next;
+      if(s.ptr->next) q.push({s.ptr->next->val, s.ptr->next});
+    }
+    return dummy.next;
   }
 };
+
 
 /*19. 删除链表的倒数第N个节点*/
 /*
