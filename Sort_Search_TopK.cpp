@@ -535,7 +535,7 @@ public:
      * @return int整型
      */
   // 这里其实是c++里面的lower_bound
-  // lower_bound(起始地址，结束地址，要查找的数值) 返回的是数值 第一个 出现的位置。
+  // lower_bound(起始地址，结束地址，要查找的数值) 返回的是待查找数值 第一次 出现的位置。
   // upper_bound(起始地址，结束地址，要查找的数值) 返回的是 第一个大于待查找数值 出现的位置。
   int upper_bound_(int n, int v, vector<int>& a) {
     // write code here
