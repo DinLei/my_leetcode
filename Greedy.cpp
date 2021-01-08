@@ -238,3 +238,29 @@ public:
     return step;
   }
 };
+
+
+/*435. 无重叠区间*/
+/*
+给定一个区间的集合，找到需要移除区间的最小数量，使剩余区间互不重叠。
+
+注意:
+  1. 可以认为区间的终点总是大于它的起点。
+  2. 区间 [1,2] 和 [2,3] 的边界相互“接触”，但没有相互重叠。
+*/
+class Solution {
+public:
+  int eraseOverlapIntervals(vector<vector<int>>& intervals) {
+    int n = intervals.size();
+    if(n <= 1) return 0;
+    sort(intervals.begin(), intervals.end(), [](vector<int>& l1, vector<int>& l2){return l1[1] < l2[1];});
+    int total = 0, prev = intervals[0][1];
+    for(int i = 1; i < n; i ++) {
+      if(intervals[i][0] < prev) 
+        total ++;
+      else 
+        prev = intervals[i][1];
+    }
+    return total;
+  }
+};
