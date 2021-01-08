@@ -261,6 +261,7 @@ public:
                         r = mid - 1;
                     }
                 }
+                // 找到第一个大于等于nums[i]的数，进行替换
                 d[pos + 1] = nums[i];
             }
         }
