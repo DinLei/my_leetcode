@@ -96,6 +96,7 @@ public:
             first = first->next;
             second = second->next;
         }
+        // 链表删除节点的方法
         second->next = second->next->next;
         ListNode* ans = dummy->next;
         delete dummy;

@@ -449,7 +449,7 @@ public:
                 if (head->next != nullptr) {
                     head->right->next = head->next->left;
                 }
-                // 指针向后移动
+                // 指针向右移动
                 head = head->next;
             }
             // 去下一层的最左的节点
