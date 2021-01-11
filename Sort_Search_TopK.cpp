@@ -1,4 +1,5 @@
-// 排序 
+// 排序：
+// 其余更一般的排序算法：https://www.runoob.com/w3cnote/ten-sorting-algorithm.html 
 /*分桶排序*/
 class Solution {
 public:
