@@ -144,7 +144,7 @@ public:
 
     bool canFinish(int numCourses, vector<vector<int>>& prerequisites) {
         edges.resize(numCourses);
-        visited.resize(numCourses);
+        visited.resize(numCourses, 0);
         for (const auto& info: prerequisites) {
             edges[info[1]].push_back(info[0]);
         }

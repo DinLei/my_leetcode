@@ -98,7 +98,7 @@ public:
       dfs(board, i, 0);     // 每一行的最左边
       dfs(board, i, nc - 1);  // 每一行的最右边
     }
-    for( int j = 1; j < nc-1; j ++ ) {
+    for( int j = 1; j < nc - 1; j ++ ) {
       dfs(board, 0, j);     // 每一列的最上边
       dfs(board, nr - 1, j);  // 每一列的最下边
     }
