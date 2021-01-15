@@ -120,7 +120,6 @@ public:
 };
 
 
-
 /**134. 加油站**/
 /*
 在一条环路上有 N 个加油站，其中第 i 个加油站有汽油 gas[i] 升。
@@ -224,13 +223,13 @@ public:
 class Solution {
 public:
   int jump(vector<int>& nums) {
-    int maxPos = 0, n = nums.size(), end = 0, step = 0;
+    int rightMost = 0, n = nums.size(), end = 0, step = 0;
     for (int i = 0; i < n - 1; ++i) {
-      if (maxPos >= i) {
-        maxPos = max(maxPos, i + nums[i]);
+      if (i <= rightMost) {
+        rightMost = max(rightMost, i + nums[i]);
         // 这里其实是代表至少到达第一个边界肯定没到达第二个边界
         if (i == end) {
-          end = maxPos;
+          end = rightMost;
           ++ step;
         }
       }

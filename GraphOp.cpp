@@ -4,6 +4,8 @@
 
 using namespace std;
 
+
+/*图实现*/
 class Graph {
   int V;
   list<int>* adj; //  临接列表
