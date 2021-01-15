@@ -139,6 +139,41 @@ public:
 };
 
 
+/*
+剑指 Offer 05. 替换空格
+输入：s = "We are happy."
+输出："We%20are%20happy."
+*/
+class Solution {
+public:
+    string replaceSpace(string s) {
+        int len1=s.length()-1;
+        for(int i=0;i<=len1;i++){
+            if(s[i]==' ')
+            {
+                s+="00";
+            }
+        }
+        int len2=s.length()-1;
+        if(len2<=len1){
+            return s;
+        }
+        for(int i=len1;i>=0;i--){
+            char c=s[i];
+            if(c==' '){
+                s[len2--]='0';
+                s[len2--]='2';
+                s[len2--]='%';
+            }
+            else{
+                s[len2--]=c;
+            }
+        }
+        return s;
+    }
+};
+
+
 /*牛课网：表达式求值
 请写一个整数计算器，支持加减乘三种运算和括号。（中缀表达式计算）*/
 /*

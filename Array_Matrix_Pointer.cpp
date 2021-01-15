@@ -452,6 +452,50 @@ public:
 };
 
 
+/*
+18. 四数之和
+给定一个包含 n 个整数的数组 nums 和一个目标值 target，判断 nums 中是否存在四个元素 a，b，c 和 d ，
+使得 a + b + c + d 的值与 target 相等？找出所有满足条件且不重复的四元组。
+
+注意：
+答案中不可以包含重复的四元组。
+*/
+class Solution {
+public:
+  vector<vector<int>> fourSum(vector<int>& nums, int target) {
+    vector<vector<int>> res;
+    if(nums.size() < 4)
+      return res;
+    sort(nums.begin(), nums.end());
+    for(int i = 0; i < nums.size() - 3; i ++) {
+      if(i > 0 && nums[i] == nums[i - 1])
+        continue;
+      for(int j = i + 1; j < nums.size() - 2; j ++) {
+        if(j > i + 1 && nums[j] == nums[j - 1])
+          continue;
+        int nt = target - nums[i] - nums[j];
+        int l = j + 1, r  = nums.size() - 1;
+        while( l < r) {
+          if(l > j + 1 && nums[l] == nums[l - 1]) {
+            l ++;
+            continue;
+          }
+          if(nums[l] + nums[r] > nt)
+            r --;
+          else if(nums[l] + nums[r] < nt)
+            l ++;
+          else {
+            res.push_back({nums[i], nums[j], nums[l], nums[r]});
+            l ++; r --;
+          }
+        }
+      }
+    }
+    return res;
+  }
+};
+
+
 /*78. 子集*/
 /*
 给定一组不含重复元素的整数数组 nums，返回该数组所有可能的子集（幂集）。
@@ -504,7 +548,7 @@ public:
 };
 
 
-/*47. 全排列 II*/
+/*47. 全排列 II， 见下面的 ‘组合总和 II’ 注意对比*/
 /*给定一个可包含重复数字的序列 nums，按任意顺序 返回所有不重复的全排列。*/
 class Solution {
 private:
@@ -526,6 +570,9 @@ public:
       res.push_back(perm); return;
     }
     for(int i = 0; i < len; i ++) {
+      // !visit[i - 1] == true 也就是 visit[i - 1] = false
+      // visit[i - 1] = true  说明 在同一分支用过
+      // visit[i - 1] = flase 说明 在同一分层用过
       if(i > 0 && nums[i] == nums[i - 1] && !visit[i - 1]) continue;
       // 初始值是0，如果=0说明是第一次用到它
       if(!visit[i]) {
@@ -538,6 +585,7 @@ public:
     }
   }
 };
+
 
 /*31. 下一个排列*/
 /*
@@ -561,6 +609,83 @@ public:
     // [i+1, end) 做成正序 保证当前组合最小
     reverse(nums.begin() + i + 1, nums.end());
   }
+};
+
+
+/*
+39. 组合总和
+给定一个无重复元素的数组 candidates 和一个目标数 target ，找出 candidates 中所有可以使数字和为 target 的组合。
+
+candidates 中的数字可以无限制重复被选取。
+
+说明：
+所有数字（包括 target）都是正整数。
+解集不能包含重复的组合。 
+*/
+class Solution {
+private:
+  vector< vector<int> > ans;
+public:
+  vector<vector<int>> combinationSum(vector<int>& candidates, int target) {
+    sort(candidates.begin(), candidates.end());
+    backTracking(candidates, {}, 0, target);
+    return ans;
+  }
+
+  void backTracking(vector<int>& candidates, vector<int> perm, int idx, int target) {
+    if(target == 0) {
+      ans.push_back(perm); return;
+    }
+    for(int i = idx; i < candidates.size(); i ++) {
+      if(target - candidates[i] < 0)
+        break;
+      perm.push_back(candidates[i]);
+      backTracking(candidates, perm, i, target - candidates[i]);
+      perm.pop_back();
+    }
+  }
+};
+
+
+
+/*40. 组合总和 II
+给定一个数组 candidates 和一个目标数 target ，找出 candidates 中所有可以使数字和为 target 的组合。
+
+candidates 中的每个数字在每个组合中只能使用一次。
+
+说明：
+所有数字（包括目标数）都是正整数。
+解集不能包含重复的组合。 
+*/
+// 使用visited进行层间剪枝，耗时从8ms降低到4ms
+class Solution {
+private:
+vector<vector<int>> ans;
+vector<int> visited;
+public:
+  vector<vector<int>> combinationSum2(vector<int>& candidates, int target) {
+    visited.resize(candidates.size(), 0);
+    sort(candidates.begin(), candidates.end());
+    backTracking(candidates, {}, target, 0);
+    return ans;
+  }
+
+  void backTracking(vector<int>& candidates, vector<int> perm, int target, int idx) {
+    if(target == 0) {
+      ans.push_back(perm); return;
+    }
+    for(int i = idx; i < candidates.size(); i ++) {
+      if(target - candidates[i] < 0) break;
+      if(i > idx && candidates[i] == candidates[i - 1] && !visited[i - 1]) continue;
+      if(!visited[i]) {
+        visited[i] = 1;
+        perm.push_back(candidates[i]);
+        backTracking(candidates, perm, target - candidates[i], i + 1);
+        perm.pop_back();
+        visited[i] = 0;
+      }
+    }
+  } 
 };
 
 
