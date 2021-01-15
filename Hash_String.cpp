@@ -174,6 +174,48 @@ public:
 };
 
 
+// 分割题，对比 Array_Matrix_Pointer.cpp 里的 ‘842. 将数组拆分成斐波那契序列’
+/*131. 分割回文串
+给定一个字符串 s，将 s 分割成一些子串，使每个子串都是回文串。
+
+返回 s 所有可能的分割方案。
+*/
+class Solution {
+private:
+  vector< vector<string> > ans;
+  vector<string> path;
+public:
+  vector<vector<string>> partition(string s) {
+    backTracking(s, 0);
+    return ans;
+  }
+
+  void backTracking(string s, int s_idx) {
+    if(s_idx >= s.size()) {
+      ans.push_back(path);
+      return;
+    }
+    for(int i = s_idx; i < s.size(); i ++) {
+      if(isPalindrome(s, s_idx, i)) {
+        path.push_back(s.substr(s_idx, i - s_idx + 1));
+      } else {
+        continue;
+      }
+      backTracking(s, i + 1);
+      path.pop_back();
+    }
+  }
+
+  bool isPalindrome(string& s, int i, int j) {
+    while(i < j) {
+      if(s[i] != s[j]) return false;
+      i ++; j --;
+    }
+    return true;
+  }
+};
+
+
 /*牛课网：表达式求值
 请写一个整数计算器，支持加减乘三种运算和括号。（中缀表达式计算）*/
 /*
