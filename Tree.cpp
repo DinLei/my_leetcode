@@ -827,9 +827,9 @@ public:
         // 2\3
         while (pNode->next) {
             // pNode的父节点
-            TreeLinkNode *fa = pNode->next;
-            if (fa->left == pNode) {
-                return fa;
+            TreeLinkNode* father = pNode->next;
+            if (father->left == pNode) {
+                return father;
             }
             // 继续往更上层的父节点追
             pNode = pNode->next;
