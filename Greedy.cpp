@@ -263,3 +263,28 @@ public:
     return total;
   }
 };
+
+
+/*
+给定某网站一天的 用户的登陆时间戳、登出时间戳的日志，求最大在线人数
+提示 时间戳 0～86400
+*/
+#include <utility>
+
+using namespace std;
+int main() {
+  //int a;
+  //cin >> a;
+  vector<pair<int, int>> logs = {{1, 6}, {1, 10}, {2, 12}, {13, 30}};
+  vector<int> delta(86401, 0);
+  for(auto& [in, out]: logs) {
+    delta[in] += 1;
+    delta[out] -= 1;
+  }
+  int ans = 0, count = 0;
+  for(int d: delta) {
+    count += d;
+    ans = max(ans, count);
+  }
+  cout << ans << endl;
+}

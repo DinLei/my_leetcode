@@ -176,7 +176,7 @@ public:
         next = next->left;
       } else {
         next = stk.top(); stk.pop();
-        if(last && last->val > next->val) {
+        if(last && last->val >= next->val) {
           e2 = next;
           if(e1 == nullptr) e1 = last;
           else break;
