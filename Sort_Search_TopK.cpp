@@ -405,6 +405,11 @@ public:
         return m.second > n.second;
     }
 
+    struct cmp2 {
+    bool operator()(pair<int, int>& m, pair<int, int>& n) {
+        return m.second > n.second;
+    }
+
     vector<int> topKFrequent(vector<int>& nums, int k) {
         unordered_map<int, int> occurrences;
         for (auto& v : nums) {
@@ -412,6 +417,7 @@ public:
         }
 
         // pair 的第一个元素代表数组的值，第二个元素代表了该值出现的次数
+        // priority_queue<pair<int, int>, vector<pair<int, int>>, cmp2> q;
         priority_queue<pair<int, int>, vector<pair<int, int>>, decltype(&cmp)> q(cmp);
         for (auto& [num, count] : occurrences) {
             if (q.size() == k) {
