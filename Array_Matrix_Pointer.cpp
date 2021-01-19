@@ -771,7 +771,7 @@ public:
     for( int j = 0; j < nums.size(); j ++ ) {
       sum += nums[j];
       while( i <= j && sum >= s ) {
-        ans = min( ans, (j - i + 1));
+        ans = min(ans, (j - i + 1));
         sum -= nums[i];
         i ++;
       }
