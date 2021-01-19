@@ -147,26 +147,24 @@ public:
 class Solution {
 public:
     string replaceSpace(string s) {
-        int len1=s.length()-1;
-        for(int i=0;i<=len1;i++){
-            if(s[i]==' ')
-            {
-                s+="00";
+        int len1 = s.length() - 1;
+        for(int i = 0; i <= len1; i ++){
+            if(s[i] == ' ') {
+                s += "00";
             }
         }
-        int len2=s.length()-1;
-        if(len2<=len1){
+        int len2 = s.length() - 1;
+        if(len2 <= len1){
             return s;
         }
-        for(int i=len1;i>=0;i--){
-            char c=s[i];
-            if(c==' '){
-                s[len2--]='0';
-                s[len2--]='2';
-                s[len2--]='%';
-            }
-            else{
-                s[len2--]=c;
+        for(int i = len1; i >= 0; i --){
+            char c = s[i];
+            if(c == ' '){
+                s[len2 --] = '0';
+                s[len2 --] = '2';
+                s[len2 --] = '%';
+            } else {
+                s[len2 --] = c;
             }
         }
         return s;
@@ -398,3 +396,53 @@ public:
   }
 };
 
+
+/*28. 实现 strStr()*/
+/*
+实现 strStr() 函数。
+
+给定一个 haystack 字符串和一个 needle 字符串，在 haystack 字符串中找出 needle 字符串出现的第一个位置 (从0开始)。如果不存在，则返回  -1。
+*/
+// 方法一：滑动窗口
+// 时间复杂度：最坏时间复杂度为 O((N - L)L)，最优时间复杂度为 O(N)。
+class Solution {
+public:
+  int strStr(string haystack, string needle) {
+    int sl = haystack.size(), tl = needle.size();
+    if(tl == 0) return 0;
+    for(int i = 0; i < sl - tl + 1; i ++) {
+      if(haystack[i] == needle[0]) {
+        int j = 1;
+        while(j < tl && haystack[i + j] == needle[j]) j ++;
+        if(j == tl) return i;
+      }
+    }
+    return -1;
+  }
+};
+ 
+// 方法二： Rabin Karp - 常数复杂度
+class Solution {
+public:
+  int strStr(string haystack, string needle) {
+    int sl = haystack.size(), tl = needle.size();
+    if(tl > sl) return -1;
+    int b = 26;
+    // 设置数值上限可以用取模的方式，即用 h % modulus 来代替原本的哈希值。 2^{31}
+    long mod = 2 << 30;
+    long h = 0, ref_h = 0;
+    for(int i = 0; i < tl; i ++) {
+      h = (h * b + haystack[i] - 'a') % mod;
+      ref_h = (ref_h * b + needle[i] - 'a') % mod;
+    }
+    if(h == ref_h) return 0;
+    long bL = 1;
+    for(int i = 1; i <= tl; i ++) bL = (bL * b) % mod;
+    for(int i = 1; i < sl - tl + 1; i ++) {
+      // 滚动哈希：常数时间生成哈希码
+      h = (h * b - (haystack[i - 1] - 'a') * bL + haystack[i + tl - 1] - 'a') % mod;
+      if(h == ref_h) return i; 
+    }
+    return -1;
+  }
+};
