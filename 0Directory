@@ -2,6 +2,7 @@
 1.  algorithm.cpp
 	1.1 开根号(二分查找法 和 牛顿法)
 	1.2 快速求幂
+	1.3 蓄水池采样
 
 2.  Array_Matrix_Pointer.cpp
 	2.1 /*88. 合并两个有序数组*/
