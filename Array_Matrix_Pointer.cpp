@@ -1013,17 +1013,17 @@ nums[i]-t<=nums[j]<=nums[i]+t
 */
 class Solution {
 public:
-    bool containsNearbyAlmostDuplicate(std::vector<int>& nums, int k, int t) {
-        std::set<long> s;
-        for (int i = 0; i < nums.size(); ++ i) {
-            auto pos = s.lower_bound(long(nums[i]) - t);
-            ////< @attention
-            if (pos != s.end() && *pos <= long(nums[i]) + t) {return true;}
-            s.insert(nums[i]);
-            if (s.size() > k) {s.erase(nums[i-k]);} ////< @note 维护活动窗口
-        }
-        return false;
+  bool containsNearbyAlmostDuplicate(std::vector<int>& nums, int k, int t) {
+    std::set<long> s;
+    for (int i = 0; i < nums.size(); ++ i) {
+      auto pos = s.lower_bound(long(nums[i]) - t);
+      ////< @attention
+      if(pos != s.end() && *pos <= long(nums[i]) + t) {return true;}
+      s.insert(nums[i]);
+      if(s.size() > k) {s.erase(nums[i - k]);} ////< @note 维护活动窗口
     }
+    return false;
+  }
 };
 // 作者：zhu-que-3
 // 链接：https://leetcode-cn.com/problems/contains-duplicate-iii/solution/jian-dan-yi-dong-de-cjie-fa-by-zhu-que-3-4p53/
