@@ -972,3 +972,61 @@ public:
     return (rs * n) % 1000000007;
   }
 };
+
+
+/**219. 存在重复元素 II*/
+/*给定一个整数数组和一个整数 k，判断数组中是否存在两个不同的索引 i 和 j，使得 nums [i] = nums [j]，并且 i 和 j 的差的 绝对值 至多为 k。*/
+class Solution {
+public:
+  bool containsNearbyDuplicate(vector<int>& nums, int k) {
+    int n = nums.size();
+    if(n < 2) return false;
+    unordered_map<int, int> map;
+    for(int i = 0; i < n; i ++) {
+      if(!map.count(nums[i])) 
+        map[nums[i]] = i;
+      else {
+        if(i - map[nums[i]] <= k) return true;
+        else map[nums[i]] = i;
+      } 
+    }
+    return false;
+  }
+};
+
+
+/*220. 存在重复元素 III*/
+/*
+level: 中等
+在整数数组 nums 中，是否存在两个下标 i 和 j，使得 nums [i] 和 nums [j] 的差的绝对值小于等于 t ，且满足 i 和 j 的差的绝对值也小于等于 ķ 。
+如果存在则返回 true，不存在返回 false。
+---
+题目：在整数数组 nums 中，是否存在两个下标 i 和 j，使得 nums [i] 和 nums [j] 的差的绝对值小于等于 t ，且满足 i 和 j 的差的绝对值也小于等于k
+要满足两个条件
+1、存在两个下标 i 和 j，使得 nums [i] 和 nums [j] 的差的绝对值小于等于 t
+2、满足 i 和 j 的差的绝对值也小于等于k
+第二个条件很好满足，维持一个滑动窗口即可，关键是第一个条件
+由|nums[i]-num[j]|<=t可以推出
+nums[i]-t<=nums[j]<=nums[i]+t
+现在，set的内置函数lower_bound可以找到第一个大于等于nums[i]-t的数，则这个数再满足小于等于nums[i]+t即可
+同时，这道题目不需要multiset。即便有重复，重复数字挨得足够近在插入之前就已经满足条件了；重复数字离得太远，不会同时进入滑动窗口
+*/
+class Solution {
+public:
+    bool containsNearbyAlmostDuplicate(std::vector<int>& nums, int k, int t) {
+        std::set<long> s;
+        for (int i = 0; i < nums.size(); ++ i) {
+            auto pos = s.lower_bound(long(nums[i]) - t);
+            ////< @attention
+            if (pos != s.end() && *pos <= long(nums[i]) + t) {return true;}
+            s.insert(nums[i]);
+            if (s.size() > k) {s.erase(nums[i-k]);} ////< @note 维护活动窗口
+        }
+        return false;
+    }
+};
+// 作者：zhu-que-3
+// 链接：https://leetcode-cn.com/problems/contains-duplicate-iii/solution/jian-dan-yi-dong-de-cjie-fa-by-zhu-que-3-4p53/
+// 来源：力扣（LeetCode）
+
+
