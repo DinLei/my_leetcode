@@ -423,7 +423,7 @@ public:
             if (q.size() == k) {
                 if (q.top().second < count) {
                     q.pop();
-                    q.emplace(num, count);
+                    q.emplace(num, count);  // push
                 }
             } else {
                 q.emplace(num, count);
