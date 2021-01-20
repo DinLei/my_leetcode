@@ -663,7 +663,7 @@ candidates 中的每个数字在每个组合中只能使用一次。
 所有数字（包括目标数）都是正整数。
 解集不能包含重复的组合。 
 */
-// 使用visited进行层间剪枝，耗时从8ms降低到4ms
+// 使用visited进行层间剪枝，耗时从8ms降低到4ms，也可以不用
 class Solution {
 private:
 vector<vector<int>> ans;
