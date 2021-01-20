@@ -534,15 +534,15 @@ public:
     return res;
   }
 
-  void backTracking(vector<vector<int>>& res, vector<int>& nums, int first, int len) {
-    if(first == len) {
+  void backTracking(vector<vector<int>>& res, vector<int>& nums, int idx, int len) {
+    if(idx == len) {
       res.push_back(nums);
       return ;
     }
-    for(int i = first; i < len; i ++) {
-      swap(nums[first], nums[i]);
-      backTracking(res, nums, first + 1, len);
-      swap(nums[first], nums[i]);
+    for(int i = idx; i < len; i ++) {
+      swap(nums[idx], nums[i]);
+      backTracking(res, nums, idx + 1, len);
+      swap(nums[idx], nums[i]);
     }
   }
 };
