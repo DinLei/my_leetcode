@@ -579,8 +579,8 @@ public:
         visit[i] = 1;
         perm.push_back(nums[i]);
         backTracking(nums, idx + 1, len);
-        visit[i] = 0;
         perm.pop_back();
+        visit[i] = 0;
       }
     }
   }
