@@ -1061,6 +1061,7 @@ public:
 数组的大小不会超过 200、
 */
 // 动态规划除了明显递推关系式以外，还有背包问题：目标是多少，从已有的元素里能填充多少，是否填完、填完用料最少等
+// dp[i][j] 表示从下标为[0-i]的物品里任意取，放进容量为j的背包，价值总和最大是多少。
 class Solution {
 public:
   bool canPartition(vector<int>& nums) {
@@ -1085,6 +1086,34 @@ public:
       }
     }
     return dp[n - 1][target];
+  }
+};
+
+// 优化：一维dp数组（滚动数组）
+// 如果使用一维dp数组，物品遍历的for循环放在外层，遍历背包的for循环放在内层，且内层for循环倒叙遍历！
+/*
+确定递推公式
+01背包的递推公式为：dp[j] = max(dp[j], dp[j - weight[i]] + value[i]);
+本题，相当于背包里放入数值，那么物品i的重量是nums[i]，其价值也是nums[i]。
+所以递推公式：dp[j] = max(dp[j], dp[j - nums[i]] + nums[i]);
+*/
+class Solution {
+public:
+  bool canPartition(vector<int>& nums) {
+    int sum = accumulate(nums.begin(), nums.end(), 0);
+    if(sum & 1) return false;
+    int target = sum >> 1;
+    // vector<int> dp(20001, 0);
+    vector<int> dp(target + 1, 0);
+    dp[0] = true;
+    for(int i = 0; i < nums.size(); i ++) {
+      for(int j = target; j >= nums[i]; j --) {
+        // dp[j] = max(dp[j], dp[j - nums[i]] + nums[i]);
+        dp[j] |= dp[j - nums[i]];
+      }
+    }
+    // return dp[target] == target;
+    return dp[target];
   }
 };
 
