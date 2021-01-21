@@ -184,7 +184,7 @@ public:
                 else dp[j] = 0;
                 last = tmp;
                 if(maxNum < dp[j]){
-                    start = i;
+                    start = i;  // 记录下出现“最长公共子串”时的末尾字符的位置
                     maxNum = dp[j];
                 }
             }
