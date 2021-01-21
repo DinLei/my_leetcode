@@ -495,3 +495,35 @@ public:
         return board;
     }
 };
+
+
+/*698. 划分为k个相等的子集*/
+class Solution {
+public:
+  bool canPartitionKSubsets(vector<int>& nums, int k) {
+    int sum = accumulate(nums.begin(), nums.end(), 0);
+    if(sum % k != 0) return false;
+    int target = sum / k;
+    sort(nums.begin(), nums.end());
+    int idx = nums.size() - 1;
+    while(idx >= 0 && nums[idx] == target) {
+      idx --; k --;
+    }
+    vector<int> groups(k, 0);
+    return backTracking(groups, nums, idx, target);
+  }
+
+  bool backTracking(vector<int>& groups, vector<int>& nums, int idx, int target) {
+    if(idx < 0) return true;
+    int v = nums[idx --];
+    for(int i = 0; i < groups.size(); i ++) {
+      if(groups[i] + v <= target) {
+        groups[i] += v;
+        if(backTracking(groups, nums, idx, target)) return true;
+        groups[i] -= v;
+      }
+      if(groups[i] == 0) break;
+    }
+    return false;
+  }
+};
