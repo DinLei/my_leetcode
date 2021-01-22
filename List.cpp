@@ -109,7 +109,7 @@ class Solution {
 public:
   /* 递归解法 */
   ListNode* swapPairs2(ListNode* head) {
-    if(head == NULL ||head->next == NULL )
+    if(head == NULL ||head->next == NULL)
       return head;
     // nnext: next->next
     ListNode* nnext = head->next->next;
