@@ -787,6 +787,38 @@ public:
 };
 
 
+/*最接近零的子数组和*/
+/*
+做法就是利用前缀和，先用一个数组sum[i]来保存从nums[0]到nums[i]的和，同时还要记录下标。
+
+那么，我们想要得到nums[i]到nums[j]的和，只要用sum[j] - sum[i-1]就可以了。
+剩下的工作就是对sum数组排序，找到排序后相邻的差的绝对值最小的那一对节点。
+*/
+class Solution {
+public:
+  vector<int> subarraySumClosest(vector<int>& nums) {
+    int n = nums.size();
+    vector< pair<int, int> > sum(n + 1);
+    sum[0].first = 0; sum[0].second = -1;
+    for(int i = 0; i < n; i ++) {
+      sum[i + 1].first = sum[i].first + nums[i];
+      sum[i + 1].second = i;
+    }
+    sort(sum.begin(), sum.end(), [](pair<int, int> a, pair<int, int> b) {return a.first < b.first});
+    vector<int> ans(2);
+    int diff = INT_MAX;
+    for(int i = 1; i <= n; i ++) {
+      int curr = abs(sum[i].first - sum[i - 1].first);
+      if(curr < diff) {
+        diff = curr;
+        ans[0] = min(sum[i].second, sum[i - 1].second) + 1;
+        ans[1] = max(sum[i].second, sum[i - 1].second);
+      }
+    }
+    return ans;
+  }
+};
+
 /*166. 分数到小数*/
 /*
 给定两个整数，分别表示分数的分子 numerator 和分母 denominator，以 字符串形式返回小数 。
